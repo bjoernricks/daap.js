@@ -9,6 +9,7 @@
 
     var LOGIN_URL = 'login';
     var UPDATE_URL = 'update';
+    var SERVER_INFO_URL = 'server-info';
 
     var NAME_LENGTH = 4;
     var SIZE_LENGTH = 4;
@@ -250,6 +251,28 @@
                     reject(xhr);
                 }
             );
+        });
+        return promise;
+    };
+
+    Daap.prototype.getServerInfo = function() {
+        var self = this;
+        var url = this.url + SERVER_INFO_URL;
+        var options = this.getHttpOptions();
+
+        var promise = new Daap.Promise(function(resolve, reject) {
+            request(url, options).then(function(xhr) {
+                var data = new DaapData({buffer: xhr.response});
+                console.log(data.name);
+                resolve({
+                    daap_version: data.find('apro').getVersion(),
+                    damp_version: data.find('mpro').getVersion(),
+                    name: data.find('minm').getString(),
+                    timeout: data.find('mstm').getUInt32(),
+                    databasecount: data.find('msdc').getUInt32(),
+                    login_required: data.find('mslr').getBoolean(),
+                });
+            });
         });
         return promise;
     };
