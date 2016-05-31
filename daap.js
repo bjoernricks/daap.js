@@ -124,9 +124,41 @@
         return -1;
     };
 
+    DaapData.prototype.getUInt8 = function() {
+        if (this.isValid()) {
+            return this.view.getUint8(this.data_offset);
+        }
+        return null;
+    };
+
     DaapData.prototype.getUInt32 = function() {
         if (this.isValid()) {
             return this.view.getUint32(this.data_offset);
+        }
+        return null;
+    };
+
+    DaapData.prototype.getVersion = function() {
+        if (this.isValid()) {
+            var version = new Uint8Array(this.view.buffer, this.data_offset,
+                    this.length);
+            return version.join('.');
+        }
+        return null;
+    };
+
+    DaapData.prototype.getString = function() {
+        if (this.isValid()) {
+            var buf = new Uint8Array(this.view.buffer, this.data_offset,
+                    this.length);
+            return decode_utf8(buf);
+        }
+        return null;
+    };
+
+    DaapData.prototype.getBoolean = function() {
+        if (this.isValid()) {
+            return this.view.getUint8(this.data_offset) === 1;
         }
         return null;
     };
