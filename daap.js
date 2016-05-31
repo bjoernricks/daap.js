@@ -79,14 +79,12 @@
         });
     }
 
-    function DaapData(view, offset) {
-        if (!is_defined(offset)) {
-            offset = 0;
-        }
-        this.offset = offset;
+    function DaapData(options) {
+        this.offset = is_defined(options.offset) ? options.offset : 0;
 
         if (this.isValid()) {
-            this.view = view;
+            this.view = options.view ? options.view :
+                new DataView(options.buffer);
             this.data_offset = this.offset + HEADER_LENGTH;
             this.length = this.view.getUint32(this.offset + NAME_LENGTH);
             var buf = new Uint8Array(this.view.buffer, this.offset,
@@ -114,9 +112,9 @@
 
     DaapData.prototype.next = function(offset) {
         if (!this.isValid() || offset >= this.getMaxLength()) {
-            return new DaapData(this.view, -1);
+            return new DaapData({view: this.view, offset: -1});
         }
-        return new DaapData(this.view, offset);
+        return new DaapData({view: this.view, offset: offset});
     };
 
     DaapData.prototype.getMaxLength = function() {
@@ -170,7 +168,7 @@
             request(url, options).then(
                 function(xhr) {
                     self.status = Daap.Status.Connected;
-                    var data = new DaapData(new DataView(xhr.response))
+                    var data = new DaapData({buffer: xhr.response})
                         .find('mlid');
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
@@ -205,7 +203,7 @@
 
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData(new DataView(xhr.response))
+                    var data = new DaapData({buffer: xhr.response})
                         .find('musr');
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
