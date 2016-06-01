@@ -11,6 +11,9 @@
     var UPDATE_URL = 'update';
     var SERVER_INFO_URL = 'server-info';
 
+    var DEFAULT_SERVER = '127.0.0.1';
+    var DEFAULT_PORT = 3689;
+
     var NAME_LENGTH = 4;
     var SIZE_LENGTH = 4;
     var HEADER_LENGTH = NAME_LENGTH + SIZE_LENGTH;
@@ -166,10 +169,7 @@
 
     function Daap(options) {
         options = options || {};
-        this.ip = options.ip || '127.0.0.1';
-        this.port = options.port || 3689;
-        this.revision = options.revision;
-        this._setUrl();
+        this.setServer(option.ip, options.port);
         this.setPassword(options.password);
     }
 
@@ -285,6 +285,24 @@
         }
     };
 
+    Daap.prototype.setServer = function(server, port) {
+        if (is_defined(server)) {
+            this.server = server;
+        }
+        else {
+            this.server = DEFAULT_SERVER;
+        }
+
+        if (is_defined(port)) {
+            this.port = port;
+        }
+        else {
+            this.port = DEFAULT_PORT;
+        }
+        this._setUrl();
+        return this;
+    };
+
     Daap.prototype._getHttpOptions = function() {
         var options = {};
         options.headers = {};
@@ -298,7 +316,7 @@
     };
 
     Daap.prototype._setUrl = function() {
-        this.url = 'http://' + this.ip + ':' + this.port + '/';
+        this.url = 'http://' + this.server + ':' + this.port + '/';
     };
 
     global.Daap = Daap;
