@@ -283,6 +283,7 @@
         else {
             this.password = undefined;
         }
+        return this;
     };
 
     Daap.prototype.setServer = function(server, port) {
