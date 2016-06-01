@@ -169,7 +169,7 @@
 
     function Daap(options) {
         options = options || {};
-        this.setServer(option.ip, options.port);
+        this.setServer(options.server, options.port);
         this.setPassword(options.password);
     }
 
