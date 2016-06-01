@@ -277,6 +277,7 @@
 
     Daap.prototype.setPassword = function(password) {
         if (is_defined(password)) {
+            /* username is ignored by daap implementations */
             this.password = global.btoa('admin:' + password);
         }
         else {
