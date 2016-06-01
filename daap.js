@@ -185,7 +185,7 @@
     Daap.prototype.connect = function() {
         var self = this;
         var url = this.url + LOGIN_URL;
-        var options = this.getHttpOptions();
+        var options = this._getHttpOptions();
 
         this.status = Daap.Status.Connecting;
 
@@ -224,7 +224,7 @@
     Daap.prototype.update = function() {
         var self = this;
         var url = this.url + UPDATE_URL + '?session-id=' + this.session_id;
-        var options = this.getHttpOptions();
+        var options = this._getHttpOptions();
 
         var promise = new Daap.Promise(function(resolve, reject) {
 
@@ -257,7 +257,7 @@
     Daap.prototype.serverinfo = function() {
         var self = this;
         var url = this.url + SERVER_INFO_URL;
-        var options = this.getHttpOptions();
+        var options = this._getHttpOptions();
 
         var promise = new Daap.Promise(function(resolve, reject) {
             request(url, options).then(function(xhr) {
@@ -284,7 +284,7 @@
         }
     };
 
-    Daap.prototype.getHttpOptions = function() {
+    Daap.prototype._getHttpOptions = function() {
         var options = {};
         options.headers = {};
 
