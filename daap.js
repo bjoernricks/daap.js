@@ -169,7 +169,7 @@
         this.ip = options.ip || '127.0.0.1';
         this.port = options.port || 3689;
         this.revision = options.revision;
-        this.url = 'http://' + this.ip + ':' + this.port + '/';
+        this._setUrl();
         this.setPassword(options.password);
     }
 
@@ -295,6 +295,10 @@
 
         options.response_type = 'arraybuffer';
         return options;
+    };
+
+    Daap.prototype._setUrl = function() {
+        this.url = 'http://' + this.ip + ':' + this.port + '/';
     };
 
     global.Daap = Daap;
