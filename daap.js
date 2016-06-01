@@ -254,7 +254,7 @@
         return promise;
     };
 
-    Daap.prototype.getServerInfo = function() {
+    Daap.prototype.serverinfo = function() {
         var self = this;
         var url = this.url + SERVER_INFO_URL;
         var options = this.getHttpOptions();
