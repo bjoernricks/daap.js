@@ -262,7 +262,6 @@
         var promise = new Daap.Promise(function(resolve, reject) {
             request(url, options).then(function(xhr) {
                 var data = new DaapData({buffer: xhr.response});
-                console.log(data.name);
                 resolve({
                     daap_version: data.find('apro').getVersion(),
                     damp_version: data.find('mpro').getVersion(),
