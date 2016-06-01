@@ -170,7 +170,7 @@
         this.port = options.port || 3689;
         this.revision = options.revision;
         this.url = 'http://' + this.ip + ':' + this.port + '/';
-        this.password = this.setPassword(options.password);
+        this.setPassword(options.password);
     }
 
     Daap.Promise = promise;
