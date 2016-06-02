@@ -267,7 +267,7 @@
                     damp_version: data.find('mpro').getVersion(),
                     name: data.find('minm').getString(),
                     timeout: data.find('mstm').getUInt32(),
-                    databasecount: data.find('msdc').getUInt32(),
+                    database_count: data.find('msdc').getUInt32(),
                     login_required: data.find('mslr').getBoolean(),
                 });
             });
