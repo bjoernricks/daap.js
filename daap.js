@@ -16,6 +16,8 @@
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
 
+    var INVALID_OFFSET = -1;
+
     var NAME_LENGTH = 4;
     var SIZE_LENGTH = 4;
     var HEADER_LENGTH = NAME_LENGTH + SIZE_LENGTH;
@@ -105,7 +107,7 @@
         }
         else {
             this.length = 0;
-            this.last_offset = -1;
+            this.last_offset = INVALID_OFFSET;
         }
     }
 
@@ -139,7 +141,7 @@
             offset = this.offset + HEADER_LENGTH + this.length;
         }
         if (offset >= this.getMaxLength()) {
-            return new DaapData({offset: -1});
+            return new DaapData({offset: INVALID_OFFSET});
         }
         return new DaapData({view: this.view, offset: offset});
     };
