@@ -1,5 +1,34 @@
 # daap.js
+
 A daap client implemented in JavaScript
+
+## A note on CORS
+
+daap.js uses [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
+internally. Therefore it depends heavily on [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+which isn't supported by any known daap server currently. To [enable Cors](https://www.w3.org/wiki/CORS_Enabled)
+for your daap server you could put it behind a http proxy that adds CORS
+headers.
+
+### Example Apache proxy config for CORS
+```
+Listen 3690
+
+NameVirtualHost *:3690
+
+<VirtualHost *:3690>
+  ProxyRequests On
+  <Proxy>
+    Order deny,allow
+    Allow from all
+  </Proxy>
+
+  ProxyPass / http://<server-url>:3689/
+  ProxyPassReverse / http://<server-url>:3689/
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET
+</VirtualHost>"
+```
 
 ## Example usage
 ```javascript
