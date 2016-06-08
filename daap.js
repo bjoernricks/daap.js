@@ -100,7 +100,7 @@
             this.name = decode_ascii(buf);
         }
         else {
-            this.size = 0;
+            this.length = 0;
         }
     }
 
