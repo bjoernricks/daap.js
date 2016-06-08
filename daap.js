@@ -119,6 +119,8 @@
     };
 
     DaapData.prototype.next = function(offset) {
+        if (!is_defined(offset)) {
+            offset = this.offset + HEADER_LENGTH + this.length;
         }
         if (offset >= this.getMaxLength()) {
             return new DaapData({offset: -1});
