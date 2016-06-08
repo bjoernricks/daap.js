@@ -119,17 +119,15 @@
     };
 
     DaapData.prototype.next = function(offset) {
-        if (!this.isValid() || offset >= this.getMaxLength()) {
-            return new DaapData({view: this.view, offset: -1});
+        }
+        if (offset >= this.getMaxLength()) {
+            return new DaapData({offset: -1});
         }
         return new DaapData({view: this.view, offset: offset});
     };
 
     DaapData.prototype.getMaxLength = function() {
-        if (this.isValid()) {
-            return this.view.byteLength;
-        }
-        return -1;
+        return this.isValid() ? -1 : this.view.byteLength;
     };
 
     DaapData.prototype.getUInt8 = function() {
