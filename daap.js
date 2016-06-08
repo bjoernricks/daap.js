@@ -396,7 +396,7 @@
                         var items = data.find('mlcl');
                         var song = items.find('mlit');
                         while (song.isValid()) {
-                            results.push(self._convertSong(song));
+                            results.push(self._convertSong(song, db_id));
                             song = song.next();
                         }
                         resolve(results);
@@ -410,9 +410,13 @@
         return promise;
     };
 
-    Daap.prototype._convertSong = function(song) {
+    Daap.prototype._convertSong = function(song, db_id) {
+        var id = song.find('miid').getUInt32();
+        var format = song.find('asfm').getString();
+        var stream = this.url + 'databases/' + db_id + '/items/' + id +
+            '.' + format + '?session-id=' + this.session_id;
         return {
-            id: song.find('miid').getUInt32(),
+            id: id,
             url: song.find('asul').getString(),
             album: song.find('asal').getString(),
             artist: song.find('asar').getString(),
@@ -424,11 +428,12 @@
             disc_count: song.find('asdc').getUInt16(),
             track_nr: song.find('astn').getUInt16(),
             track_count: song.find('astc').getUInt16(),
-            format: song.find('asfm').getString(),
+            format: format,
             bitrate: song.find('asbr').getUInt16(),
             size: song.find('assz').getUInt32(),
             year: song.find('asyr').getUInt16(),
             duration: song.find('astm').getUInt32(), // daap.songtime in ms
+            stream_url: stream,
         };
     };
 
