@@ -139,6 +139,13 @@
         return null;
     };
 
+    DaapData.prototype.getUInt16 = function() {
+        if (this.isValid()) {
+            return this.view.getUint16(this.data_offset);
+        }
+        return null;
+    };
+
     DaapData.prototype.getUInt32 = function() {
         if (this.isValid()) {
             return this.view.getUint32(this.data_offset);
