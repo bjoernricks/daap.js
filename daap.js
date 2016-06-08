@@ -137,6 +137,9 @@
     };
 
     DaapData.prototype.next = function(offset) {
+        if (!this.isValid()) {
+            return new DaapData({offset: INVALID_OFFSET});
+        }
         if (!is_defined(offset)) {
             offset = this.offset + HEADER_LENGTH + this.length;
         }
