@@ -98,18 +98,32 @@
             var buf = new Uint8Array(this.view.buffer, this.offset,
                     NAME_LENGTH);
             this.name = decode_ascii(buf);
+            this.children = {};
+            this.last_offset = this.offset + HEADER_LENGTH;
         }
         else {
             this.length = 0;
+            this.last_offset = -1;
         }
     }
 
     DaapData.prototype.find = function(name) {
-        var offset = this.offset + HEADER_LENGTH;
-        var tag = this.next(offset);
+        if (name in this.children) {
+            // tag is in cache
+            return this.children[name];
+        }
+
+        var tag = this.next(this.last_offset);
+
         while (tag.isValid() && tag.name !== name) {
-            offset = offset + HEADER_LENGTH + tag.length;
-            tag = this.next(offset);
+            this.children[tag.name] = tag;
+            this.last_offset = this.last_offset + HEADER_LENGTH + tag.length;
+            tag = this.next(this.last_offset);
+        }
+
+        if (tag.isValid()) {
+            // add found valid tag to cache
+            this.children[tag.name] = tag;
         }
         return tag;
     };
