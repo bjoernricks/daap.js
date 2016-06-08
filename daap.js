@@ -47,6 +47,10 @@
         return plaintext;
     }
 
+    function decode_ascii(buffer) {
+        return String.fromCharCode.apply(null, buffer);
+    }
+
     function is_defined(value) {
         return value !== undefined;
     }
@@ -93,7 +97,7 @@
             this.length = this.view.getUint32(this.offset + NAME_LENGTH);
             var buf = new Uint8Array(this.view.buffer, this.offset,
                     NAME_LENGTH);
-            this.name = String.fromCharCode.apply(null, buf);
+            this.name = decode_ascii(buf);
         }
         else {
             this.size = 0;
