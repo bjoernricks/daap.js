@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Exampe usage of daap.js</title>
+        <script type="text/javascript" src="../daap.js"></script>
+        <script type="text/javascript" src="jquery-2.2.4.js"></script>
+        <script type="text/javascript" src="example.js"></script>
+        <style type="text/css">
+            div {
+                margin-bottom: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>daap.js Example</h1>
+        <div>
+            <label>Server
+                <input name="server" id="server" type="text" />
+            </label>
+            <label>Port
+                <input name="port" id="port" type="text" />
+            </label>
+            <label>Password
+                <input name="password" id="password" type="password" />
+            </label>
+        </div>
+        <div>
+            <input type="button" class="connect" value="Connect" />
+        </div>
+        <div id="content">
+        </div>
+        <div id="serverinfo">
+        </div>
+    </body>
+</html>
