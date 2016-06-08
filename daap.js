@@ -222,6 +222,8 @@
 
             if (self.status !== Daap.Status.Disconnected &&
                     self.status !== Daap.Status.Error) {
+                reject(new Error('Invalid status ' + self.status +
+                            ' for connect'));
                 return;
             }
 
@@ -234,7 +236,8 @@
                         .find('mlid');
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(xhr);
+                        reject(new Error('Could not extract session id from ' +
+                                    'DAAP response'));
                     }
                     else {
                         self.session_id = data.getUInt32();
@@ -243,7 +246,7 @@
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(xhr);
+                    reject(new Error(xhr.statusText));
                 }
             ).then(function() {
                 resolve();
@@ -260,7 +263,8 @@
         var promise = new Daap.Promise(function(resolve, reject) {
 
             if (self.status !== Daap.Status.HasSession) {
-                reject();
+                reject(new Error('Invalid status ' + self.status +
+                            ' for update'));
                 return;
             }
 
@@ -270,7 +274,8 @@
                         .find('musr');
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(xhr);
+                        reject(new Error('Could not extract revision id from ' +
+                                    'DAAP response'));
                     }
                     else {
                         self.revision_id = data.getUInt32();
