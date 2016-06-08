@@ -12,6 +12,7 @@
     var SERVER_INFO_URL = 'server-info';
     var DATABASES_URL = 'databases';
     var ITEMS_URL = 'items';
+    var PLAYLISTS_URL = 'containers';
 
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
@@ -434,6 +435,74 @@
             year: song.find('asyr').getUInt16(),
             duration: song.find('astm').getUInt32(), // daap.songtime in ms
             stream_url: stream,
+        };
+    };
+
+    Daap.prototype.playlists = function(db_id) {
+        if (!is_defined(db_id)) {
+            db_id = 1;
+        }
+
+        var fields = [
+            'dmap.itemid',
+            'dmap.itemname',
+            'dmap.itemcount',
+            'dmap.persistentid',
+            'dmap.parentcontainerid',
+            'dmap.editc',
+            'daap.baseplaylist',
+            'com.apple.itunes.special-playlist',
+            'com.apple.itunes.smart-playlist',
+        ];
+
+        var self = this;
+        var url = this.url + DATABASES_URL + '/' + db_id + '/' + PLAYLISTS_URL +
+            '?session-id=' + this.session_id + '&revision-id=' +
+            this.revision_id + '&meta=' + fields.join();
+        var options = this._getHttpOptions();
+
+        var promise = new Daap.Promise(function(resolve, reject) {
+            if (self.status !== Daap.Status.HasRevision) {
+                reject(new Error('Invalid status ' + self.status +
+                            ' for playlists'));
+                return;
+            }
+            request(url, options).then(
+                function(xhr) {
+                    var data = new DaapData({buffer: xhr.response});
+                    if (!data.isValid()) {
+                        self.status = Daap.Status.Error;
+                        reject(new Error('Could not find playlists data'));
+                    }
+                    else {
+                        var results = [];
+                        var items = data.find('mlcl');
+                        var list = items.find('mlit');
+                        while (list.isValid()) {
+                            results.push(self._convertPlayList(list, db_id));
+                            list = list.next();
+                        }
+                        resolve(results);
+                    }
+                }, function(xhr) {
+                    self.status = Daap.Status.Error;
+                    reject(new Error(xhr));
+                }
+            );
+        });
+        return promise;
+    };
+
+    Daap.prototype._convertPlayList = function(list, db_id) {
+        return {
+            id: list.find('miid').getUInt32(),
+            persistent_id: list.find('mper').getUInt32(), //FIXME its 64 bit
+            parent_id: list.find('mpco').getUInt32(),
+            name: list.find('minm').getString(),
+            count: list.find('mimc').getUInt32(),
+            base_playlist: list.find('abpl').getBoolean(),
+            smart_playlist: list.find('aeSP').getBoolean(),
+            special_playlist: list.find('aePS').getBoolean(),
         };
     };
 
