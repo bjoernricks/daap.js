@@ -155,11 +155,14 @@
         return null;
     };
 
-    DaapData.prototype.getString = function() {
+    DaapData.prototype.getString = function(decode_func) {
         if (this.isValid()) {
+            if (!is_defined(decode_func)) {
+                decode_func = decode_utf8;
+            }
             var buf = new Uint8Array(this.view.buffer, this.data_offset,
                     this.length);
-            return decode_utf8(buf);
+            return decode_func(buf);
         }
         return null;
     };
