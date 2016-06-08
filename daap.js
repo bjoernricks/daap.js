@@ -18,27 +18,27 @@
     var SIZE_LENGTH = 4;
     var HEADER_LENGTH = NAME_LENGTH + SIZE_LENGTH;
 
-    function decode_utf8(utftext) {
+    function decode_utf8(buffer) {
         var plaintext = '';
         var i = 0;
         var c = 0;
         var c1 = 0;
         var c2 = 0;
 
-        while (i < utftext.length) {
-            c = utftext[i];
+        while (i < buffer.length) {
+            c = buffer[i];
             if (c < 128) {
                 plaintext += String.fromCharCode(c);
                 i++;
             }
             else if ((c > 191) && (c < 224)) {
-                c1 = utftext[i + 1];
+                c1 = buffer[i + 1];
                 plaintext += String.fromCharCode(((c & 31) << 6) | (c1 & 63));
                 i += 2;
             }
             else {
-                c1 = utftext[i + 1];
-                c2 = utftext[i + 2];
+                c1 = buffer[i + 1];
+                c2 = buffer[i + 2];
                 plaintext += String.fromCharCode(
                         ((c & 15) << 12) | ((c1 & 63) << 6) | (c2 & 63));
                 i += 3;
