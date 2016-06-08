@@ -10,6 +10,7 @@
     var LOGIN_URL = 'login';
     var UPDATE_URL = 'update';
     var SERVER_INFO_URL = 'server-info';
+    var DATABASES_URL = 'databases';
 
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
@@ -285,6 +286,51 @@
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
                     reject(xhr);
+                }
+            );
+        });
+        return promise;
+    };
+
+    Daap.prototype.databases = function() {
+        var self = this;
+        var url = this.url + DATABASES_URL + '?session-id=' + this.session_id +
+            '&revision-id=' + this.revision_id;
+        var options = this._getHttpOptions();
+
+        var promise = new Daap.Promise(function(resolve, reject) {
+            if (self.status !== Daap.Status.HasRevision) {
+                reject(new Error('Invalid status ' + self.status +
+                            ' for databases'));
+                return;
+            }
+            request(url, options).then(
+                function(xhr) {
+                    var data = new DaapData({buffer: xhr.response});
+                    if (!data.isValid()) {
+                        self.status = Daap.Status.Error;
+                        reject(new Error('Could not find database data'));
+                    }
+                    else {
+                        var results = [];
+                        var databases = data.find('mlcl');
+
+                        var db = databases.find('mlit');
+                        while (db.isValid()) {
+                            results.push({
+                                id: db.find('miid').getUInt32(),
+                                name: db.find('minm').getString(),
+                                song_count: db.find('mimc').getUInt32(),
+                                playlist_count: db.find('mctc').getUInt32(),
+                            });
+                            db = db.next();
+                        }
+
+                        resolve(results);
+                    }
+                }, function(xhr) {
+                    self.status = Daap.Status.Error;
+                    reject(new Error(xhr));
                 }
             );
         });
