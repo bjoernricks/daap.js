@@ -145,7 +145,7 @@
     };
 
     DaapData.prototype.getMaxLength = function() {
-        return this.isValid() ? -1 : this.view.byteLength;
+        return this.isValid() ? this.view.byteLength : -1;
     };
 
     DaapData.prototype.getUInt8 = function() {
