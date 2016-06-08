@@ -11,6 +11,7 @@
     var UPDATE_URL = 'update';
     var SERVER_INFO_URL = 'server-info';
     var DATABASES_URL = 'databases';
+    var ITEMS_URL = 'items';
 
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
@@ -335,6 +336,96 @@
             );
         });
         return promise;
+    };
+
+    Daap.prototype.items = function(db_id) {
+        if (!is_defined(db_id)) {
+            db_id = 1;
+        }
+
+        var fields = [
+            'dmap.itemid',
+            'dmap.itemname',
+            'daap.songalbum',
+            'daap.songartist',
+            'daap.songbitrate',
+            'daap.songcomment',
+            'daap.songcompilation',
+            'daap.songcomposer',
+            'daap.songdataurl',
+            'daap.songdateadded',
+            'daap.songdatemodified',
+            'daap.songdescription',
+            'daap.songdisccount',
+            'daap.songdiscnumber',
+            'daap.songformat',
+            'daap.songgenre',
+            'daap.songsize',
+            'daap.songtime',
+            'daap.songtracknumber',
+            'daap.songtrackcount',
+            'daap.songyear',
+        ];
+
+        var self = this;
+        var url = this.url + DATABASES_URL + '/' + db_id + '/' + ITEMS_URL +
+            '?session-id=' + this.session_id + '&revision-id=' +
+            this.revision_id + '&meta=' + fields.join();
+        var options = this._getHttpOptions();
+
+        var promise = new Daap.Promise(function(resolve, reject) {
+            if (self.status !== Daap.Status.HasRevision) {
+                reject(new Error('Invalid status ' + self.status +
+                            ' for items'));
+                return;
+            }
+            request(url, options).then(
+                function(xhr) {
+                    var data = new DaapData({buffer: xhr.response});
+                    if (!data.isValid()) {
+                        self.status = Daap.Status.Error;
+                        reject(new Error('Could not find items data'));
+                    }
+                    else {
+                        var results = [];
+                        var items = data.find('mlcl');
+                        var song = items.find('mlit');
+                        var i = 0;
+                        while (song.isValid()) {
+                            results.push(self._convertSong(song));
+                            song = song.next();
+                        }
+                        resolve(results);
+                    }
+                }, function(xhr) {
+                    self.status = Daap.Status.Error;
+                    reject(new Error(xhr));
+                }
+            );
+        });
+        return promise;
+    };
+
+    Daap.prototype._convertSong = function(song) {
+        return {
+            id: song.find('miid').getUInt32(),
+            url: song.find('asul').getString(),
+            album: song.find('asal').getString(),
+            artist: song.find('asar').getString(),
+            compilation: song.find('asco').getUInt8(),
+            genre: song.find('asgn').getString(),
+            description: song.find('asdt').getString(),
+            comment: song.find('ascm').getString(),
+            disc_nr: song.find('asdn').getUInt16(),
+            disc_count: song.find('asdc').getUInt16(),
+            track_nr: song.find('astn').getUInt16(),
+            track_count: song.find('astc').getUInt16(),
+            format: song.find('asfm').getString(),
+            bitrate: song.find('asbr').getUInt16(),
+            size: song.find('assz').getUInt32(),
+            year: song.find('asyr').getUInt16(),
+            duration: song.find('astm').getUInt32(), // daap.songtime in ms
+        };
     };
 
     Daap.prototype.serverinfo = function() {
