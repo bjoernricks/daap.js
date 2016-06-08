@@ -29,6 +29,9 @@
                 return daap.databases();
             }).then(function(dbs) {
                 console.log(dbs);
+                return daap.playlists();
+            }).then(function(lists) {
+                console.log(lists);
                 return daap.items();
             }).then(function(items) {
                 console.log(items);
