@@ -197,6 +197,7 @@
 
     function Daap(options) {
         options = options || {};
+        this.status = Daap.Status.Disconnected;
         this.setServer(options.server, options.port);
         this.setPassword(options.password);
     }
@@ -207,7 +208,9 @@
         Disconnected: 1,
         Connecting: 2,
         Connected: 3,
-        Error: 4,
+        HasSession: 4,
+        HasRevision: 5,
+        Error: -1,
     };
 
     Daap.prototype.connect = function() {
@@ -215,15 +218,14 @@
         var url = this.url + LOGIN_URL;
         var options = this._getHttpOptions();
 
-        this.status = Daap.Status.Connecting;
-
         var promise = new Daap.Promise(function(resolve, reject) {
 
             if (self.status !== Daap.Status.Disconnected &&
                     self.status !== Daap.Status.Error) {
-                reject();
                 return;
             }
+
+            self.status = Daap.Status.Connecting;
 
             request(url, options).then(
                 function(xhr) {
@@ -236,6 +238,7 @@
                     }
                     else {
                         self.session_id = data.getUInt32();
+                        self.status = Daap.Status.HasSession;
                         return self.update();
                     }
                 }, function(xhr) {
@@ -256,7 +259,7 @@
 
         var promise = new Daap.Promise(function(resolve, reject) {
 
-            if (self.status !== Daap.Status.Connected) {
+            if (self.status !== Daap.Status.HasSession) {
                 reject();
                 return;
             }
@@ -271,6 +274,7 @@
                     }
                     else {
                         self.revision_id = data.getUInt32();
+                        self.status = Daap.Status.HasRevision;
                         resolve();
                     }
                 }, function(xhr) {
