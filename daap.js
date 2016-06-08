@@ -395,7 +395,6 @@
                         var results = [];
                         var items = data.find('mlcl');
                         var song = items.find('mlit');
-                        var i = 0;
                         while (song.isValid()) {
                             results.push(self._convertSong(song));
                             song = song.next();
