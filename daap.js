@@ -175,6 +175,19 @@
         return null;
     };
 
+    /**
+     * FIXME
+     *
+     * JavaScript has no long (64 Bit integer) value. Therefore currently read
+     * only to lower 32 Bit
+     */
+    DaapData.prototype.getLong = function() {
+        if (this.isValid()) {
+            return this.view.getUint32(this.data_offset + 4);
+        }
+        return null;
+    };
+
     DaapData.prototype.getVersion = function() {
         if (this.isValid()) {
             var version = new Uint8Array(this.view.buffer, this.data_offset,
