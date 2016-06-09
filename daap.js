@@ -340,7 +340,7 @@
                             results.push({
                                 id: db.find('miid').getUInt32(),
                                 name: db.find('minm').getString(),
-                                song_count: db.find('mimc').getUInt32(),
+                                item_count: db.find('mimc').getUInt32(),
                                 playlist_count: db.find('mctc').getUInt32(),
                             });
                             db = db.next();
@@ -512,7 +512,7 @@
             persistent_id: list.find('mper').getUInt32(), //FIXME its 64 bit
             parent_id: list.find('mpco').getUInt32(),
             name: list.find('minm').getString(),
-            count: list.find('mimc').getUInt32(),
+            item_count: list.find('mimc').getUInt32(),
             base_playlist: list.find('abpl').getBoolean(),
             smart_playlist: list.find('aeSP').getBoolean(),
             special_playlist: list.find('aePS').getBoolean(),
