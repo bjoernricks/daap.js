@@ -509,7 +509,7 @@
     Daap.prototype._convertPlayList = function(list, db_id) {
         return {
             id: list.find('miid').getUInt32(),
-            persistent_id: list.find('mper').getUInt32(), //FIXME its 64 bit
+            persistent_id: list.find('mper').getLong(),
             parent_id: list.find('mpco').getUInt32(),
             name: list.find('minm').getString(),
             item_count: list.find('mimc').getUInt32(),
