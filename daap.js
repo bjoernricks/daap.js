@@ -164,6 +164,13 @@
         return null;
     };
 
+    DaapData.prototype.getInt8 = function() {
+        if (this.isValid()) {
+            return this.view.getInt8(this.data_offset);
+        }
+        return null;
+    };
+
     DaapData.prototype.getUInt16 = function() {
         if (this.isValid()) {
             return this.view.getUint16(this.data_offset);
@@ -171,9 +178,23 @@
         return null;
     };
 
+    DaapData.prototype.getInt16 = function() {
+        if (this.isValid()) {
+            return this.view.getInt16(this.data_offset);
+        }
+        return null;
+    };
+
     DaapData.prototype.getUInt32 = function() {
         if (this.isValid()) {
             return this.view.getUint32(this.data_offset);
+        }
+        return null;
+    };
+
+    DaapData.prototype.getInt32 = function() {
+        if (this.isValid()) {
+            return this.view.getInt32(this.data_offset);
         }
         return null;
     };
