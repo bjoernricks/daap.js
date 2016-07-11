@@ -13,6 +13,7 @@
     var DATABASES_URL = 'databases';
     var ITEMS_URL = 'items';
     var PLAYLISTS_URL = 'containers';
+    var CONTENT_CODES_URL = 'content-codes';
 
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
@@ -632,6 +633,30 @@
             });
         });
         return promise;
+    };
+
+    Daap.prototype.updateContentCodes = function() {
+        var self = this;
+        var url = this.url + CONTENT_CODES_URL;
+        var options = this._getHttpOptions();
+
+        return request(url, options).then(function(xhr) {
+            var data = new DaapData({
+                buffer: xhr.response,
+                content_codes: self.content_codes,
+            });
+            var entry = data.find('mdcl');
+            if (entry.isValid()) {
+                var content_codes = {};
+
+                while (entry.isValid()) {
+                    content_codes[entry.get('mcnm')] =
+                        CONTENT_TYPES[entry.get('mcty')];
+                    entry = entry.next();
+                }
+                self.content_codes = content_codes;
+            }
+        });
     };
 
     Daap.prototype.setPassword = function(password) {
