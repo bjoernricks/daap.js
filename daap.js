@@ -212,6 +212,8 @@
         return null;
     };
 
+    DaapData.prototype.getUInt64 = DaapData.prototype.getInt64;
+
     DaapData.prototype.getVersion = function() {
         if (this.isValid()) {
             var version = new Uint8Array(this.view.buffer, this.data_offset,
