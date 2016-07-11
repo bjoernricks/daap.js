@@ -318,25 +318,16 @@
         var url = this.url + LOGIN_URL;
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-
-            if (self.status !== Daap.Status.Disconnected &&
-                    self.status !== Daap.Status.Error) {
-                reject(new Error('Invalid status ' + self.status +
-                            ' for connect'));
-                return;
-            }
-
-            self.status = Daap.Status.Connecting;
-
-            request(url, options).then(
-                function(xhr) {
+        return this._checkStatus([Daap.Status.Disconnected, Daap.Status.Error],
+                'Invalid status ' + this.status + ' for connect')
+            .then(function() {
+                return request(url, options).then(function(xhr) {
                     self.status = Daap.Status.Connected;
                     var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(new Error('Could not extract session id from ' +
-                                    'DAAP response'));
+                        throw new Error('Could not extract session id from ' +
+                                'DAAP response');
                     }
                     else {
                         self.session_id = data.get('mlid');
@@ -345,13 +336,9 @@
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(new Error(xhr.statusText));
-                }
-            ).then(function() {
-                resolve();
+                    throw new Error(xhr.statusText);
+                });
             });
-        });
-        return promise;
     };
 
     Daap.prototype.update = function() {
@@ -359,34 +346,27 @@
         var url = this.url + UPDATE_URL + '?session-id=' + this.session_id;
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-
-            if (self.status !== Daap.Status.HasSession) {
-                reject(new Error('Invalid status ' + self.status +
-                            ' for update'));
-                return;
-            }
-
-            request(url, options).then(
+        return this._checkStatus([Daap.Status.HasSession], 'Invalid status ' +
+                self.status + ' for update').then(function() {
+            return request(url, options).then(
                 function(xhr) {
                     var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(new Error('Could not extract revision id from ' +
-                                    'DAAP response'));
+                        throw new Error('Could not extract revision id from ' +
+                                    'DAAP response');
                     }
                     else {
                         self.revision_id = data.get('musr');
                         self.status = Daap.Status.HasRevision;
-                        resolve();
+                        return;
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(xhr);
+                    throw new Error(xhr.statusText);
                 }
             );
         });
-        return promise;
     };
 
     Daap.prototype.databases = function() {
@@ -395,18 +375,14 @@
             '&revision-id=' + this.revision_id;
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-            if (self.status !== Daap.Status.HasRevision) {
-                reject(new Error('Invalid status ' + self.status +
-                            ' for databases'));
-                return;
-            }
-            request(url, options).then(
+        return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
+                self.status + ' for databases').then(function() {
+            return request(url, options).then(
                 function(xhr) {
                     var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(new Error('Could not find database data'));
+                        throw new Error('Could not find database data');
                     }
                     else {
                         var results = [];
@@ -423,15 +399,14 @@
                             db = db.next();
                         }
 
-                        resolve(results);
+                        return results;
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(new Error(xhr));
+                    throw new Error(xhr);
                 }
             );
         });
-        return promise;
     };
 
     Daap.prototype.items = function(db_id) {
@@ -469,18 +444,14 @@
             this.revision_id + '&meta=' + fields.join();
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-            if (self.status !== Daap.Status.HasRevision) {
-                reject(new Error('Invalid status ' + self.status +
-                            ' for items'));
-                return;
-            }
-            request(url, options).then(
+        return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
+                self.status + ' for items').then(function() {
+            return request(url, options).then(
                 function(xhr) {
                     var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(new Error('Could not find items data'));
+                        throw new Error('Could not find items data');
                     }
                     else {
                         var results = [];
@@ -490,15 +461,14 @@
                             results.push(self._convertSong(song, db_id));
                             song = song.next();
                         }
-                        resolve(results);
+                        return results;
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(new Error(xhr));
+                    throw new Error(xhr);
                 }
             );
         });
-        return promise;
     };
 
     Daap.prototype._convertSong = function(song, db_id) {
@@ -551,18 +521,14 @@
             this.revision_id + '&meta=' + fields.join();
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-            if (self.status !== Daap.Status.HasRevision) {
-                reject(new Error('Invalid status ' + self.status +
-                            ' for playlists'));
-                return;
-            }
-            request(url, options).then(
+        return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
+                self.status + ' for playlists').then(function() {
+            return request(url, options).then(
                 function(xhr) {
                     var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
-                        reject(new Error('Could not find playlists data'));
+                        throw new Error('Could not find playlists data');
                     }
                     else {
                         var results = [];
@@ -572,15 +538,14 @@
                             results.push(self._convertPlayList(list, db_id));
                             list = list.next();
                         }
-                        resolve(results);
+                        return results;
                     }
                 }, function(xhr) {
                     self.status = Daap.Status.Error;
-                    reject(new Error(xhr));
+                    throw new Error(xhr);
                 }
             );
         });
-        return promise;
     };
 
     Daap.prototype._convertPlayList = function(list, db_id) {
@@ -684,6 +649,16 @@
         return new DaapData({
             buffer: xhr.response,
             content_codes: this.content_codes,
+        });
+    };
+
+    Daap.prototype._checkStatus = function(status, message) {
+        var self = this;
+        return new Daap.Promise(function(resolve, reject) {
+            if (status.indexOf(self.status) === -1) { // not in array
+                reject(new Error(message));
+            }
+            resolve();
         });
     };
 
