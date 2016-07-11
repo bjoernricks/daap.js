@@ -313,7 +313,7 @@
         Error: -1,
     };
 
-    Daap.prototype.connect = function() {
+    Daap.prototype.login = function() {
         var self = this;
         var url = this.url + LOGIN_URL;
 
