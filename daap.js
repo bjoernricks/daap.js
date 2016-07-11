@@ -138,6 +138,18 @@
         return tag;
     };
 
+    DaapData.prototype.get = function(name) {
+        var func = this.content_codes[name];
+        if (!is_defined(func)) {
+            console.log(this.content_codes);
+            throw new Error('Unknown content code ' + name);
+        }
+        if (func === null) {
+            return this.find(name);
+        }
+        return func.call(this.find(name));
+    };
+
     DaapData.prototype.isValid = function() {
         return this.offset >= 0;
     };
