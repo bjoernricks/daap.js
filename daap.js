@@ -16,6 +16,7 @@
 
     var DEFAULT_SERVER = '127.0.0.1';
     var DEFAULT_PORT = 3689;
+    var DEFAULT_TIMEOUT = 10000;
 
     var INVALID_OFFSET = -1;
 
@@ -67,6 +68,8 @@
 
             xhr.open(method, url, true);
             xhr.responseType = options.response_type || 'text';
+            xhr.timeout = options.timeout !== undefined ? options.timeout :
+                DEFAULT_TIMEOUT;
 
             if (options.headers) {
                 for (var name in options.headers) {
