@@ -260,7 +260,7 @@
         mlid: DaapData.prototype.getInt32,   // dmap.sessionid
         mstm: DaapData.prototype.getInt32,   // dmap.timeoutinterval
         msdc: DaapData.prototype.getInt32,   // dmap.databasescount
-        mslr: DaapData.prototype.getBoolean, // dmap.loginrequired
+        mslr: DaapData.prototype.getInt8,    // dmap.loginrequired (1 or 0)
         musr: DaapData.prototype.getInt32,   // server revision
         miid: DaapData.prototype.getInt32,   // dmap.itemid
         minm: DaapData.prototype.getString,  // dmap.itemname
@@ -284,9 +284,9 @@
         astm: DaapData.prototype.getInt32,   // daap.songtime (in ms)
         mper: DaapData.prototype.getInt64,   // dmap.persistentid
         mpco: DaapData.prototype.getInt32,   // dmap.parentcontainerid
-        abpl: DaapData.prototype.getBoolean, // daap.baseplaylist
-        aeSP: DaapData.prototype.getBoolean, // com.apple.itunes.smart-playlist
-        aePS: DaapData.prototype.getBoolean, // com.apple.itunes.special-playlist
+        abpl: DaapData.prototype.getInt8,    // daap.baseplaylist (1 or 0)
+        aeSP: DaapData.prototype.getInt8,    // com.apple.itunes.smart-playlist (1 or 0)
+        aePS: DaapData.prototype.getInt8,    // com.apple.itunes.special-playlist (1 or 0)
         mcnm: DaapData.prototype.getString,  // dmap.contentcodesnumber the 4 byte codename
         mcna: DaapData.prototype.getString,  // dmap.contentcodesname the full name of the code
         mcty: DaapData.prototype.getInt16,   // dmap.contentcodestype the type of the code
