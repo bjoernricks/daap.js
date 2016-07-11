@@ -68,7 +68,7 @@
 
             xhr.open(method, url, true);
             xhr.responseType = options.response_type || 'text';
-            xhr.timeout = options.timeout !== undefined ? options.timeout :
+            xhr.timeout = is_defined(options.timeout) ? options.timeout :
                 DEFAULT_TIMEOUT;
 
             if (options.headers) {
