@@ -97,8 +97,10 @@
 
     function DaapData(options) {
         this.offset = is_defined(options.offset) ? options.offset : 0;
-
         if (this.isValid()) {
+            this.content_codes = is_defined(options.content_codes) ?
+                options.content_codes : DEFAULT_CONTENT_CODES;
+
             this.view = options.view ? options.view :
                 new DataView(options.buffer);
             this.data_offset = this.offset + HEADER_LENGTH;
@@ -150,7 +152,11 @@
         if (offset >= this.getMaxLength()) {
             return new DaapData({offset: INVALID_OFFSET});
         }
-        return new DaapData({view: this.view, offset: offset});
+        return new DaapData({
+            view: this.view,
+            offset: offset,
+            content_codes: this.content_codes
+        });
     };
 
     DaapData.prototype.getMaxLength = function() {
