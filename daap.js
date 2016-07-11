@@ -193,10 +193,7 @@
     };
 
     DaapData.prototype.getInt32 = function() {
-        if (this.isValid()) {
-            return this.view.getInt32(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getInt32(this.data_offset) : null;
     };
 
     /**
@@ -206,10 +203,8 @@
      * only to lower 32 Bit
      */
     DaapData.prototype.getInt64 = function() {
-        if (this.isValid()) {
-            return this.view.getUint32(this.data_offset + 4);
-        }
-        return null;
+        return this.isValid() ? this.view.getUint32(this.data_offset + 4) :
+            null;
     };
 
     DaapData.prototype.getUInt64 = DaapData.prototype.getInt64;
@@ -236,10 +231,8 @@
     };
 
     DaapData.prototype.getBoolean = function() {
-        if (this.isValid()) {
-            return this.view.getUint8(this.data_offset) === 1;
-        }
-        return null;
+        return this.isValid() ? this.view.getUint8(this.data_offset) === 1 :
+            null;
     };
 
     function Daap(options) {
