@@ -7,7 +7,13 @@
     'use strict';
 
     $(document).ready(function() {
-        $('.connect').on('click', connect);
+        $('#login').on('click', connect).show();
+        $('#logout').on('click', function() {
+            daap.logout();
+            $('#logout').hide();
+            $('#login').show();
+            $('#content').remove('*');
+        }).hide();
 
         var daap = new Daap({
             server: $('server').val(),
@@ -25,11 +31,13 @@
 
             daap.updateContentCodes()
                 .then(function() {
-                    return daap.connect();
+                    return daap.login();
                 })
                 .then(function(xhr) {
                     $('<div/>').text('connected').appendTo(content);
                     console.log('connected. Session id is ' + daap.session_id);
+                    $('#login').hide();
+                    $('#logout').show();
                     return daap.databases();
                 })
                 .then(function(dbs) {
@@ -38,7 +46,7 @@
                 })
                 .then(function(lists) {
                     console.log(lists);
-                    return daap.items();
+                    return daap.items({max: 500});
                 })
                 .then(function(items) {
                     console.log(items);
