@@ -385,10 +385,10 @@
         });
     };
 
-    Daap.prototype.items = function(db_id) {
-        if (!is_defined(db_id)) {
-            db_id = 1;
-        }
+    Daap.prototype.items = function(options) {
+        options = options || {};
+
+        var db_id = is_defined(options.db_id) ? option.db_id : 1;
 
         var fields = [
             'dmap.itemid',
