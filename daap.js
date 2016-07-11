@@ -601,20 +601,17 @@
         var url = this.url + SERVER_INFO_URL;
         var options = this._getHttpOptions();
 
-        var promise = new Daap.Promise(function(resolve, reject) {
-            request(url, options).then(function(xhr) {
-                var data = self._newData(xhr);
-                resolve({
-                    daap_version: data.get('apro'),
-                    damp_version: data.get('mpro'),
-                    name: data.get('minm'),
-                    timeout: data.get('mstm'),
-                    database_count: data.get('msdc'),
-                    login_required: data.get('mslr'),
-                });
-            });
+        return request(url, options).then(function(xhr) {
+            var data = self._newData(xhr);
+            return {
+                daap_version: data.get('apro'),
+                damp_version: data.get('mpro'),
+                name: data.get('minm'),
+                timeout: data.get('mstm'),
+                database_count: data.get('msdc'),
+                login_required: data.get('mslr'),
+            };
         });
-        return promise;
     };
 
     Daap.prototype.updateContentCodes = function() {
