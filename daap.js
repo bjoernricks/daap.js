@@ -296,6 +296,7 @@
     function Daap(options) {
         options = options || {};
         this.status = Daap.Status.Disconnected;
+        this.content_codes = DEFAULT_CONTENT_CODES;
         this.setServer(options.server, options.port);
         this.setPassword(options.password);
     }
@@ -330,15 +331,17 @@
             request(url, options).then(
                 function(xhr) {
                     self.status = Daap.Status.Connected;
-                    var data = new DaapData({buffer: xhr.response})
-                        .find('mlid');
-                    if (!data.isValid()) {
+                    var data = new DaapData({
+                        buffer: xhr.response,
+                        content_codes: self.content_codes,
+                    }).get('mlid');
+                    if (data === null) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not extract session id from ' +
                                     'DAAP response'));
                     }
                     else {
-                        self.session_id = data.getUInt32();
+                        self.session_id = data;
                         self.status = Daap.Status.HasSession;
                         return self.update();
                     }
@@ -368,15 +371,17 @@
 
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({buffer: xhr.response})
-                        .find('musr');
-                    if (!data.isValid()) {
+                    var data = new DaapData({
+                        buffer: xhr.response,
+                        content_codes: self.content_codes,
+                    }).get('musr');
+                    if (data === null) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not extract revision id from ' +
                                     'DAAP response'));
                     }
                     else {
-                        self.revision_id = data.getUInt32();
+                        self.revision_id = data;
                         self.status = Daap.Status.HasRevision;
                         resolve();
                     }
@@ -403,7 +408,10 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({buffer: xhr.response});
+                    var data = new DaapData({
+                        buffer: xhr.response,
+                        content_codes: self.content_codes,
+                    });
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find database data'));
@@ -415,10 +423,10 @@
                         var db = databases.find('mlit');
                         while (db.isValid()) {
                             results.push({
-                                id: db.find('miid').getUInt32(),
-                                name: db.find('minm').getString(),
-                                item_count: db.find('mimc').getUInt32(),
-                                playlist_count: db.find('mctc').getUInt32(),
+                                id: db.get('miid'),
+                                name: db.get('minm'),
+                                item_count: db.get('mimc'),
+                                playlist_count: db.get('mctc'),
                             });
                             db = db.next();
                         }
@@ -477,7 +485,10 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({buffer: xhr.response});
+                    var data = new DaapData({
+                        buffer: xhr.response,
+                        content_codes: self.content_codes,
+                    });
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find items data'));
@@ -502,28 +513,28 @@
     };
 
     Daap.prototype._convertSong = function(song, db_id) {
-        var id = song.find('miid').getUInt32();
-        var format = song.find('asfm').getString();
+        var id = song.get('miid');
+        var format = song.get('asfm');
         var stream = this.url + 'databases/' + db_id + '/items/' + id +
             '.' + format + '?session-id=' + this.session_id;
         return {
             id: id,
-            url: song.find('asul').getString(),
-            album: song.find('asal').getString(),
-            artist: song.find('asar').getString(),
-            compilation: song.find('asco').getUInt8(),
-            genre: song.find('asgn').getString(),
-            description: song.find('asdt').getString(),
-            comment: song.find('ascm').getString(),
-            disc_nr: song.find('asdn').getUInt16(),
-            disc_count: song.find('asdc').getUInt16(),
-            track_nr: song.find('astn').getUInt16(),
-            track_count: song.find('astc').getUInt16(),
+            url: song.get('asul'),
+            album: song.get('asal'),
+            artist: song.get('asar'),
+            compilation: song.get('asco'),
+            genre: song.get('asgn'),
+            description: song.get('asdt'),
+            comment: song.get('ascm'),
+            disc_nr: song.get('asdn'),
+            disc_count: song.get('asdc'),
+            track_nr: song.get('astn'),
+            track_count: song.get('astc'),
             format: format,
-            bitrate: song.find('asbr').getUInt16(),
-            size: song.find('assz').getUInt32(),
-            year: song.find('asyr').getUInt16(),
-            duration: song.find('astm').getUInt32(), // daap.songtime in ms
+            bitrate: song.get('asbr'),
+            size: song.get('assz'),
+            year: song.get('asyr'),
+            duration: song.get('astm'),
             stream_url: stream,
         };
     };
@@ -559,7 +570,10 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({buffer: xhr.response});
+                    var data = new DaapData({
+                        buffer: xhr.response,
+                        content_codes: self.content_codes,
+                    });
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find playlists data'));
@@ -585,14 +599,14 @@
 
     Daap.prototype._convertPlayList = function(list, db_id) {
         return {
-            id: list.find('miid').getUInt32(),
-            persistent_id: list.find('mper').getInt64(),
-            parent_id: list.find('mpco').getUInt32(),
-            name: list.find('minm').getString(),
-            item_count: list.find('mimc').getUInt32(),
-            base_playlist: list.find('abpl').getBoolean(),
-            smart_playlist: list.find('aeSP').getBoolean(),
-            special_playlist: list.find('aePS').getBoolean(),
+            id: list.get('miid'),
+            persistent_id: list.get('mper'),
+            parent_id: list.get('mpco'),
+            name: list.get('minm'),
+            item_count: list.get('mimc'),
+            base_playlist: list.get('abpl'),
+            smart_playlist: list.get('aeSP'),
+            special_playlist: list.get('aePS'),
         };
     };
 
@@ -603,14 +617,17 @@
 
         var promise = new Daap.Promise(function(resolve, reject) {
             request(url, options).then(function(xhr) {
-                var data = new DaapData({buffer: xhr.response});
+                var data = new DaapData({
+                    buffer: xhr.response,
+                    content_codes: self.content_codes,
+                });
                 resolve({
-                    daap_version: data.find('apro').getVersion(),
-                    damp_version: data.find('mpro').getVersion(),
-                    name: data.find('minm').getString(),
-                    timeout: data.find('mstm').getUInt32(),
-                    database_count: data.find('msdc').getUInt32(),
-                    login_required: data.find('mslr').getBoolean(),
+                    daap_version: data.get('apro'),
+                    damp_version: data.get('mpro'),
+                    name: data.get('minm'),
+                    timeout: data.get('mstm'),
+                    database_count: data.get('msdc'),
+                    login_required: data.get('mslr'),
                 });
             });
         });
