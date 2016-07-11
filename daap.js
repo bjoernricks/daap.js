@@ -205,7 +205,7 @@
      * JavaScript has no long (64 Bit integer) value. Therefore currently read
      * only to lower 32 Bit
      */
-    DaapData.prototype.getLong = function() {
+    DaapData.prototype.getInt64 = function() {
         if (this.isValid()) {
             return this.view.getUint32(this.data_offset + 4);
         }
@@ -533,7 +533,7 @@
     Daap.prototype._convertPlayList = function(list, db_id) {
         return {
             id: list.find('miid').getUInt32(),
-            persistent_id: list.find('mper').getLong(),
+            persistent_id: list.find('mper').getInt64(),
             parent_id: list.find('mpco').getUInt32(),
             name: list.find('minm').getString(),
             item_count: list.find('mimc').getUInt32(),
