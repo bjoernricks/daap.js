@@ -8,6 +8,7 @@
     'use strict';
 
     var LOGIN_URL = 'login';
+    var LOGOUT_URL = 'logout';
     var UPDATE_URL = 'update';
     var SERVER_INFO_URL = 'server-info';
     var DATABASES_URL = 'databases';
@@ -327,6 +328,20 @@
                 self.status = Daap.Status.HasSession;
                 return self.update();
             });
+    };
+
+    Daap.prototype.logout = function() {
+        if (this.status === Daap.Status.Disconnected) {
+            return Daap.Promise.resolve();
+        }
+
+        var self = this;
+        var url = this.url + LOGOUT_URL + '?session-id=' + this.session_id;
+
+        return this._request(url).then(function(data) {
+            self.status = Daap.Status.Disconnected;
+            return data;
+        });
     };
 
     Daap.prototype.update = function() {
