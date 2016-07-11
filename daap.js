@@ -220,6 +220,61 @@
             null;
     };
 
+    var CONTENT_TYPES = {
+        1: DaapData.prototype.getInt8,     // byte
+        2: DaapData.prototype.getUInt8,    // unsigned byte
+        3: DaapData.prototype.getInt16,    // short
+        4: DaapData.prototype.getUInt16,   // unsigned short
+        5: DaapData.prototype.getInt32,    // int
+        6: DaapData.prototype.getUInt32,   // unsigned int
+        7: DaapData.prototype.getInt64,    // long
+        8: DaapData.prototype.getUInt64,   // unsinged long
+        9: DaapData.prototype.getString,   // utf-8 string
+        10: DaapData.prototype.getUInt32,  // 4 byte int as seconds since 1.1.1970 (UNIX timestamp)
+        11: DaapData.prototype.getVersion, // represented as 4 single bytes, e.g. 0.1.0.0
+        12: null,                          // list
+    };
+
+    var DEFAULT_CONTENT_CODES = {
+        apro: DaapData.prototype.getVersion, // daap.protocolversion
+        mpro: DaapData.prototype.getVersion, // dmap.protocolversion
+        mlid: DaapData.prototype.getInt32,   // dmap.sessionid
+        mstm: DaapData.prototype.getInt32,   // dmap.timeoutinterval
+        msdc: DaapData.prototype.getInt32,   // dmap.databasescount
+        mslr: DaapData.prototype.getBoolean, // dmap.loginrequired
+        musr: DaapData.prototype.getInt32,   // server revision
+        miid: DaapData.prototype.getInt32,   // dmap.itemid
+        minm: DaapData.prototype.getString,  // dmap.itemname
+        mimc: DaapData.prototype.getInt32,   // dmap.itemcount
+        mctc: DaapData.prototype.getInt32,   // number of playlists in db
+        asfm: DaapData.prototype.getString,  // daap.songformat
+        asul: DaapData.prototype.getString,  // daap.songdataurl
+        asal: DaapData.prototype.getString,  // daap.songalbum
+        asar: DaapData.prototype.getString,  // daap.songartist
+        asco: DaapData.prototype.getInt8,    // daap.songcompilation
+        asgn: DaapData.prototype.getString,  // daap.songgenre
+        asdt: DaapData.prototype.getString,  // daap.songdescription
+        ascm: DaapData.prototype.getString,  // daap.songcomment
+        asdn: DaapData.prototype.getInt16,   // daap.songdiscnumber
+        asdc: DaapData.prototype.getInt16,   // daap.songdisccount
+        astn: DaapData.prototype.getInt16,   // daap.songtracknumber
+        astc: DaapData.prototype.getInt16,   // daap.songtrackcount
+        asbr: DaapData.prototype.getInt16,   // daap.songbitrate
+        assz: DaapData.prototype.getInt32,   // daap.songsize
+        asyr: DaapData.prototype.getInt16,   // daap.songyear
+        astm: DaapData.prototype.getInt32,   // daap.songtime (in ms)
+        mper: DaapData.prototype.getInt64,   // dmap.persistentid
+        mpco: DaapData.prototype.getInt32,   // dmap.parentcontainerid
+        abpl: DaapData.prototype.getBoolean, // daap.baseplaylist
+        aeSP: DaapData.prototype.getBoolean, // com.apple.itunes.smart-playlist
+        aePS: DaapData.prototype.getBoolean, // com.apple.itunes.special-playlist
+        mcnm: DaapData.prototype.getString,  // dmap.contentcodesnumber the 4 byte codename
+        mcna: DaapData.prototype.getString,  // dmap.contentcodesname the full name of the code
+        mcty: DaapData.prototype.getInt16,   // dmap.contentcodestype the type of the code
+        mlcl: null,                          // dmap.listing
+        mdcl: null,                          // dmap.dictionary
+    };
+
     function Daap(options) {
         options = options || {};
         this.status = Daap.Status.Disconnected;
