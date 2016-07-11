@@ -332,17 +332,14 @@
             request(url, options).then(
                 function(xhr) {
                     self.status = Daap.Status.Connected;
-                    var data = new DaapData({
-                        buffer: xhr.response,
-                        content_codes: self.content_codes,
-                    }).get('mlid');
-                    if (data === null) {
+                    var data = self._newData(xhr);
+                    if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not extract session id from ' +
                                     'DAAP response'));
                     }
                     else {
-                        self.session_id = data;
+                        self.session_id = data.get('mlid');
                         self.status = Daap.Status.HasSession;
                         return self.update();
                     }
@@ -372,17 +369,14 @@
 
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({
-                        buffer: xhr.response,
-                        content_codes: self.content_codes,
-                    }).get('musr');
-                    if (data === null) {
+                    var data = self._newData(xhr);
+                    if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not extract revision id from ' +
                                     'DAAP response'));
                     }
                     else {
-                        self.revision_id = data;
+                        self.revision_id = data.get('musr');
                         self.status = Daap.Status.HasRevision;
                         resolve();
                     }
@@ -409,10 +403,7 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({
-                        buffer: xhr.response,
-                        content_codes: self.content_codes,
-                    });
+                    var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find database data'));
@@ -486,10 +477,7 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({
-                        buffer: xhr.response,
-                        content_codes: self.content_codes,
-                    });
+                    var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find items data'));
@@ -571,10 +559,7 @@
             }
             request(url, options).then(
                 function(xhr) {
-                    var data = new DaapData({
-                        buffer: xhr.response,
-                        content_codes: self.content_codes,
-                    });
+                    var data = self._newData(xhr);
                     if (!data.isValid()) {
                         self.status = Daap.Status.Error;
                         reject(new Error('Could not find playlists data'));
@@ -618,10 +603,7 @@
 
         var promise = new Daap.Promise(function(resolve, reject) {
             request(url, options).then(function(xhr) {
-                var data = new DaapData({
-                    buffer: xhr.response,
-                    content_codes: self.content_codes,
-                });
+                var data = self._newData(xhr);
                 resolve({
                     daap_version: data.get('apro'),
                     damp_version: data.get('mpro'),
@@ -641,10 +623,7 @@
         var options = this._getHttpOptions();
 
         return request(url, options).then(function(xhr) {
-            var data = new DaapData({
-                buffer: xhr.response,
-                content_codes: self.content_codes,
-            });
+            var data = self._newData(xhr);
             var entry = data.find('mdcl');
             if (entry.isValid()) {
                 var content_codes = {};
@@ -702,6 +681,13 @@
 
     Daap.prototype._setUrl = function() {
         this.url = 'http://' + this.server + ':' + this.port + '/';
+    };
+
+    Daap.prototype._newData = function(xhr) {
+        return new DaapData({
+            buffer: xhr.response,
+            content_codes: this.content_codes,
+        });
     };
 
     global.Daap = Daap;
