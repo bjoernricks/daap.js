@@ -23,21 +23,29 @@
                     $('#serverinfo'));
             });
 
-            daap.connect().then(function(xhr) {
-                $('<div/>').text('connected').appendTo(content);
-                console.log('connected');
-                return daap.databases();
-            }).then(function(dbs) {
-                console.log(dbs);
-                return daap.playlists();
-            }).then(function(lists) {
-                console.log(lists);
-                return daap.items();
-            }).then(function(items) {
-                console.log(items);
-            }).catch(function(error) {
-                console.error(error);
-            });
+            daap.updateContentCodes()
+                .then(function() {
+                    return daap.connect();
+                })
+                .then(function(xhr) {
+                    $('<div/>').text('connected').appendTo(content);
+                    console.log('connected. Session id is ' + daap.session_id);
+                    return daap.databases();
+                })
+                .then(function(dbs) {
+                    console.log(dbs);
+                    return daap.playlists();
+                })
+                .then(function(lists) {
+                    console.log(lists);
+                    return daap.items();
+                })
+                .then(function(items) {
+                    console.log(items);
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
         }
 
     });
