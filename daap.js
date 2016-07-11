@@ -316,56 +316,30 @@
     Daap.prototype.connect = function() {
         var self = this;
         var url = this.url + LOGIN_URL;
-        var options = this._getHttpOptions();
 
         return this._checkStatus([Daap.Status.Disconnected, Daap.Status.Error],
                 'Invalid status ' + this.status + ' for connect')
             .then(function() {
-                return request(url, options).then(function(xhr) {
-                    self.status = Daap.Status.Connected;
-                    var data = self._newData(xhr);
-                    if (!data.isValid()) {
-                        self.status = Daap.Status.Error;
-                        throw new Error('Could not extract session id from ' +
-                                'DAAP response');
-                    }
-                    else {
-                        self.session_id = data.get('mlid');
-                        self.status = Daap.Status.HasSession;
-                        return self.update();
-                    }
-                }, function(xhr) {
-                    self.status = Daap.Status.Error;
-                    throw new Error(xhr.statusText);
-                });
+                return self._request(url);
+            }).then(function(data) {
+                self.status = Daap.Status.Connected;
+                self.session_id = data.get('mlid');
+                self.status = Daap.Status.HasSession;
+                return self.update();
             });
     };
 
     Daap.prototype.update = function() {
         var self = this;
         var url = this.url + UPDATE_URL + '?session-id=' + this.session_id;
-        var options = this._getHttpOptions();
 
         return this._checkStatus([Daap.Status.HasSession], 'Invalid status ' +
                 self.status + ' for update').then(function() {
-            return request(url, options).then(
-                function(xhr) {
-                    var data = self._newData(xhr);
-                    if (!data.isValid()) {
-                        self.status = Daap.Status.Error;
-                        throw new Error('Could not extract revision id from ' +
-                                    'DAAP response');
-                    }
-                    else {
-                        self.revision_id = data.get('musr');
-                        self.status = Daap.Status.HasRevision;
-                        return;
-                    }
-                }, function(xhr) {
-                    self.status = Daap.Status.Error;
-                    throw new Error(xhr.statusText);
-                }
-            );
+            return self._request(url);
+        }).then(function(data) {
+            self.revision_id = data.get('musr');
+            self.status = Daap.Status.HasRevision;
+            return;
         });
     };
 
@@ -373,39 +347,26 @@
         var self = this;
         var url = this.url + DATABASES_URL + '?session-id=' + this.session_id +
             '&revision-id=' + this.revision_id;
-        var options = this._getHttpOptions();
 
         return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
                 self.status + ' for databases').then(function() {
-            return request(url, options).then(
-                function(xhr) {
-                    var data = self._newData(xhr);
-                    if (!data.isValid()) {
-                        self.status = Daap.Status.Error;
-                        throw new Error('Could not find database data');
-                    }
-                    else {
-                        var results = [];
-                        var databases = data.find('mlcl');
+            return self._request(url);
+        }).then(function(data) {
+            var results = [];
+            var databases = data.find('mlcl');
 
-                        var db = databases.find('mlit');
-                        while (db.isValid()) {
-                            results.push({
-                                id: db.get('miid'),
-                                name: db.get('minm'),
-                                item_count: db.get('mimc'),
-                                playlist_count: db.get('mctc'),
-                            });
-                            db = db.next();
-                        }
+            var db = databases.find('mlit');
+            while (db.isValid()) {
+                results.push({
+                    id: db.get('miid'),
+                    name: db.get('minm'),
+                    item_count: db.get('mimc'),
+                    playlist_count: db.get('mctc'),
+                });
+                db = db.next();
+            }
 
-                        return results;
-                    }
-                }, function(xhr) {
-                    self.status = Daap.Status.Error;
-                    throw new Error(xhr);
-                }
-            );
+            return results;
         });
     };
 
@@ -442,32 +403,19 @@
         var url = this.url + DATABASES_URL + '/' + db_id + '/' + ITEMS_URL +
             '?session-id=' + this.session_id + '&revision-id=' +
             this.revision_id + '&meta=' + fields.join();
-        var options = this._getHttpOptions();
 
         return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
                 self.status + ' for items').then(function() {
-            return request(url, options).then(
-                function(xhr) {
-                    var data = self._newData(xhr);
-                    if (!data.isValid()) {
-                        self.status = Daap.Status.Error;
-                        throw new Error('Could not find items data');
-                    }
-                    else {
-                        var results = [];
-                        var items = data.find('mlcl');
-                        var song = items.find('mlit');
-                        while (song.isValid()) {
-                            results.push(self._convertSong(song, db_id));
-                            song = song.next();
-                        }
-                        return results;
-                    }
-                }, function(xhr) {
-                    self.status = Daap.Status.Error;
-                    throw new Error(xhr);
-                }
-            );
+            return self._request(url);
+        }).then(function(data) {
+            var results = [];
+            var items = data.find('mlcl');
+            var song = items.find('mlit');
+            while (song.isValid()) {
+                results.push(self._convertSong(song, db_id));
+                song = song.next();
+            }
+            return results;
         });
     };
 
@@ -519,32 +467,19 @@
         var url = this.url + DATABASES_URL + '/' + db_id + '/' + PLAYLISTS_URL +
             '?session-id=' + this.session_id + '&revision-id=' +
             this.revision_id + '&meta=' + fields.join();
-        var options = this._getHttpOptions();
 
         return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
                 self.status + ' for playlists').then(function() {
-            return request(url, options).then(
-                function(xhr) {
-                    var data = self._newData(xhr);
-                    if (!data.isValid()) {
-                        self.status = Daap.Status.Error;
-                        throw new Error('Could not find playlists data');
-                    }
-                    else {
-                        var results = [];
-                        var items = data.find('mlcl');
-                        var list = items.find('mlit');
-                        while (list.isValid()) {
-                            results.push(self._convertPlayList(list, db_id));
-                            list = list.next();
-                        }
-                        return results;
-                    }
-                }, function(xhr) {
-                    self.status = Daap.Status.Error;
-                    throw new Error(xhr);
-                }
-            );
+            return self._request(url);
+        }).then(function(data) {
+            var results = [];
+            var items = data.find('mlcl');
+            var list = items.find('mlit');
+            while (list.isValid()) {
+                results.push(self._convertPlayList(list, db_id));
+                list = list.next();
+            }
+            return results;
         });
     };
 
@@ -564,10 +499,8 @@
     Daap.prototype.serverinfo = function() {
         var self = this;
         var url = this.url + SERVER_INFO_URL;
-        var options = this._getHttpOptions();
 
-        return request(url, options).then(function(xhr) {
-            var data = self._newData(xhr);
+        return this._request(url).then(function(data) {
             return {
                 daap_version: data.get('apro'),
                 damp_version: data.get('mpro'),
@@ -582,10 +515,8 @@
     Daap.prototype.updateContentCodes = function() {
         var self = this;
         var url = this.url + CONTENT_CODES_URL;
-        var options = this._getHttpOptions();
 
-        return request(url, options).then(function(xhr) {
-            var data = self._newData(xhr);
+        return this._request(url).then(function(data) {
             var entry = data.find('mdcl');
             if (entry.isValid()) {
                 var content_codes = {};
@@ -659,6 +590,21 @@
                 reject(new Error(message));
             }
             resolve();
+        });
+    };
+
+    Daap.prototype._request = function(url) {
+        var self = this;
+        return request(url, this._getHttpOptions()).then(function(xhr) {
+            var data = self._newData(xhr);
+            if (!data.isValid()) {
+                self.status = Daap.Status.Error;
+                throw new Error('Invalid data in response');
+            }
+            return data;
+        }, function(xhr) {
+            self.status = Daap.Status.Error;
+            throw new Error(xhr);
         });
     };
 
