@@ -423,15 +423,24 @@
                 self.status + ' for items').then(function() {
             return self._request(url);
         }).then(function(data) {
-            var results = [];
             var items = data.find('mlcl');
-            var song = items.find('mlit');
-            while (song.isValid()) {
-                results.push(self._convertSong(song, db_id));
-                song = song.next();
-            }
-            return results;
+            self._song = items.find('mlit');
+            self._db_id = db_id;
+            return self.nextItems(options.max);
         });
+    };
+
+    Daap.prototype.nextItems = function(max) {
+        var self = this;
+        var results = [];
+
+        for (var i = 0; is_defined(self._song) && self._song.isValid() &&
+                (!is_defined(max) || i < max); i++) {
+            results.push(self._convertSong(self._song, self._db_id));
+            self._song = self._song.next();
+        }
+
+        return Daap.Promise.resolve(results);
     };
 
     Daap.prototype._convertSong = function(song, db_id) {
