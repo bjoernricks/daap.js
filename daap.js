@@ -158,38 +158,23 @@
     };
 
     DaapData.prototype.getUInt8 = function() {
-        if (this.isValid()) {
-            return this.view.getUint8(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getUint8(this.data_offset) : null;
     };
 
     DaapData.prototype.getInt8 = function() {
-        if (this.isValid()) {
-            return this.view.getInt8(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getInt8(this.data_offset) : null;
     };
 
     DaapData.prototype.getUInt16 = function() {
-        if (this.isValid()) {
-            return this.view.getUint16(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getUint16(this.data_offset) : null;
     };
 
     DaapData.prototype.getInt16 = function() {
-        if (this.isValid()) {
-            return this.view.getInt16(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getInt16(this.data_offset) : null;
     };
 
     DaapData.prototype.getUInt32 = function() {
-        if (this.isValid()) {
-            return this.view.getUint32(this.data_offset);
-        }
-        return null;
+        return this.isValid() ? this.view.getUint32(this.data_offset) : null;
     };
 
     DaapData.prototype.getInt32 = function() {
