@@ -205,7 +205,7 @@
      * FIXME
      *
      * JavaScript has no long (64 Bit integer) value. Therefore currently read
-     * only to lower 32 Bit
+     * only the lower 32 Bit
      */
     DaapData.prototype.getInt64 = function() {
         return this.isValid() ? this.view.getUint32(this.data_offset + 4) :
