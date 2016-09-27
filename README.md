@@ -1,6 +1,6 @@
 # daap.js
 
-A daap client implemented in JavaScript
+A promise based Digital Audio Access Protocol (DAAP) client implementation in JavaScript
 
 ## A note on CORS
 
