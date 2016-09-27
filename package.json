@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/bjoernricks/daap.js/issues"
   },
-  "homepage": "https://github.com/bjoernricks/daap.js#readme"
+  "homepage": "https://github.com/bjoernricks/daap.js#readme",
+  "devDependencies": {
+    "eslint": "^3.6.1"
+  }
 }
