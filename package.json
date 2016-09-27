@@ -1,0 +1,33 @@
+{
+  "name": "daap.js",
+  "version": "1.0.0",
+  "description": "A promise based Digital Audio Access Protocol (DAAP) client implementation",
+  "main": "daap.js",
+  "files": [
+      "daap.js",
+      "README.md",
+      "LICENSE"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bjoernricks/daap.js.git"
+  },
+  "keywords": [
+    "daap",
+    "iTunes",
+    "DAAP",
+    "streaming",
+    "audio",
+    "music",
+    "remote"
+  ],
+  "author": "Björn Ricks <bjoern.ricks@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bjoernricks/daap.js/issues"
+  },
+  "homepage": "https://github.com/bjoernricks/daap.js#readme"
+}
