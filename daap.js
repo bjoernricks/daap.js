@@ -313,9 +313,13 @@ Daap.Status = {
     Error: -1,
 };
 
-Daap.prototype.login = function() {
+Daap.prototype.login = function(password) {
     var self = this;
     var url = this.url + LOGIN_URL;
+
+    if (is_defined(password)) {
+        this.setPassword(password);
+    }
 
     return this._checkStatus([Daap.Status.Disconnected, Daap.Status.Error],
             'Invalid status ' + this.status + ' for connect')
