@@ -495,18 +495,18 @@ Daap.prototype.playlists = function(db_id) {
         this.revision_id + '&meta=' + fields.join();
 
     return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
-            self.status + ' for playlists').then(function() {
-        return self._request(url);
-    }).then(function(data) {
-        var results = [];
-        var items = data.find('mlcl');
-        var list = items.find('mlit');
-        while (list.isValid()) {
-            results.push(self._convertPlayList(list, db_id));
-            list = list.next();
-        }
-        return results;
-    });
+        self.status + ' for playlists').then(function() {
+            return self._request(url);
+        }).then(function(data) {
+            var results = [];
+            var items = data.find('mlcl');
+            var list = items.find('mlit');
+            while (list.isValid()) {
+                results.push(self._convertPlayList(list, db_id));
+                list = list.next();
+            }
+            return results;
+        });
 };
 
 Daap.prototype._convertPlayList = function(list, db_id) {
