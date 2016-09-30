@@ -142,7 +142,6 @@ DaapData.prototype.find = function(name) {
 DaapData.prototype.get = function(name) {
     var func = this.content_codes[name];
     if (!is_defined(func)) {
-        console.log(this.content_codes);
         throw new Error('Unknown content code ' + name);
     }
     if (func === null) {
