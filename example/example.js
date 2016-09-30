@@ -7,6 +7,8 @@
     'use strict';
 
     $(document).ready(function() {
+        var daap;
+
         $('#login').on('click', connect).show();
         $('#logout').on('click', function() {
             daap.logout();
@@ -15,14 +17,15 @@
             $('#content').remove('*');
         }).hide();
 
-        var daap = new Daap({
-            server: $('server').val(),
-            port: $('port').val(),
-            password: $('password').val(),
-        });
         var content = $('#content');
 
         function connect() {
+            daap = new Daap({
+                server: $('#server').val(),
+                port: $('#port').val(),
+                password: $('#password').val(),
+            });
+
             daap.serverinfo().then(function(server) {
                 console.log(server);
                 $('<code/>').text(JSON.stringify(server)).appendTo(
@@ -46,10 +49,15 @@
                 })
                 .then(function(lists) {
                     console.log(lists);
-                    return daap.items({max: 500});
+                    return daap.items({max: 50});
                 })
                 .then(function(items) {
                     console.log(items);
+                    var item = items[0];
+
+                    $('#audio')
+                        .attr('type', 'audio/' + item.format)
+                        .attr('src', item.stream_url);
                 })
                 .catch(function(error) {
                     console.error(error);
