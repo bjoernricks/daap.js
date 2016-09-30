@@ -351,13 +351,13 @@ Daap.prototype.update = function() {
     var url = this.url + UPDATE_URL + '?session-id=' + this.session_id;
 
     return this._checkStatus([Daap.Status.HasSession], 'Invalid status ' +
-            self.status + ' for update').then(function() {
-        return self._request(url);
-    }).then(function(data) {
-        self.revision_id = data.get('musr');
-        self.status = Daap.Status.HasRevision;
-        return;
-    });
+        self.status + ' for update').then(function() {
+            return self._request(url);
+        }).then(function(data) {
+            self.revision_id = data.get('musr');
+            self.status = Daap.Status.HasRevision;
+            return;
+        });
 };
 
 Daap.prototype.databases = function() {
@@ -366,25 +366,25 @@ Daap.prototype.databases = function() {
         '&revision-id=' + this.revision_id;
 
     return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
-            self.status + ' for databases').then(function() {
-        return self._request(url);
-    }).then(function(data) {
-        var results = [];
-        var databases = data.find('mlcl');
+        self.status + ' for databases').then(function() {
+            return self._request(url);
+        }).then(function(data) {
+            var results = [];
+            var databases = data.find('mlcl');
 
-        var db = databases.find('mlit');
-        while (db.isValid()) {
-            results.push({
-                id: db.get('miid'),
-                name: db.get('minm'),
-                item_count: db.get('mimc'),
-                playlist_count: db.get('mctc'),
-            });
-            db = db.next();
-        }
+            var db = databases.find('mlit');
+            while (db.isValid()) {
+                results.push({
+                    id: db.get('miid'),
+                    name: db.get('minm'),
+                    item_count: db.get('mimc'),
+                    playlist_count: db.get('mctc'),
+                });
+                db = db.next();
+            }
 
-        return results;
-    });
+            return results;
+        });
 };
 
 Daap.prototype.items = function(options) {
@@ -422,14 +422,14 @@ Daap.prototype.items = function(options) {
         this.revision_id + '&meta=' + fields.join();
 
     return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
-            self.status + ' for items').then(function() {
-        return self._request(url);
-    }).then(function(data) {
-        var items = data.find('mlcl');
-        self._song = items.find('mlit');
-        self._db_id = db_id;
-        return self.nextItems(options.max);
-    });
+        self.status + ' for items').then(function() {
+            return self._request(url);
+        }).then(function(data) {
+            var items = data.find('mlcl');
+            self._song = items.find('mlit');
+            self._db_id = db_id;
+            return self.nextItems(options.max);
+        });
 };
 
 Daap.prototype.nextItems = function(max) {
