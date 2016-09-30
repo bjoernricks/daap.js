@@ -509,7 +509,7 @@ Daap.prototype.playlists = function(db_id) {
         });
 };
 
-Daap.prototype._convertPlayList = function(list, db_id) {
+Daap.prototype._convertPlayList = function(list) {
     return {
         id: list.get('miid'),
         persistent_id: list.get('mper'),
@@ -523,7 +523,6 @@ Daap.prototype._convertPlayList = function(list, db_id) {
 };
 
 Daap.prototype.serverinfo = function() {
-    var self = this;
     var url = this.url + SERVER_INFO_URL;
 
     return this._request(url).then(function(data) {
