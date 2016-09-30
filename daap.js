@@ -452,6 +452,7 @@ Daap.prototype._convertSong = function(song, db_id) {
         '.' + format + '?session-id=' + this.session_id;
     return {
         id: id,
+        name: song.get('minm'),
         url: song.get('asul'),
         album: song.get('asal'),
         artist: song.get('asar'),
