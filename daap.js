@@ -588,7 +588,9 @@ Daap.prototype.setServer = function(server, port) {
 
 Daap.prototype._getHttpOptions = function() {
     var options = {};
-    options.headers = {};
+    options.headers = {
+        Accept: 'application/x-dmap-tagged',
+    };
 
     if (is_defined(this.password)) {
         options.headers.Authorization = 'Basic ' + this.password;
