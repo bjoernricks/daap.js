@@ -44,7 +44,7 @@ daap.serverinfo().then(function(server_info) {
 /* set password if your server requires one */
 daap.setPassword('.....');
 
-daap.connect().then(function() {
+daap.login().then(function() {
     console.log('Yeah I am connected to my daap server');
     return daap.items();
 }).then(function(songs) {
