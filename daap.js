@@ -632,7 +632,10 @@ Daap.prototype._request = function(url) {
         return data;
     }, function(xhr) {
         self.status = Daap.Status.Error;
-        throw new Error(xhr);
+        var error = new Error('An error occured while requesting ' + url);
+        error.name = 'RequestError';
+        error.xhr = xhr;
+        throw error;
     });
 };
 
