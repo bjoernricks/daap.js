@@ -25,6 +25,19 @@ var NAME_LENGTH = 4;
 var SIZE_LENGTH = 4;
 var HEADER_LENGTH = NAME_LENGTH + SIZE_LENGTH;
 
+var SORT = ['name', 'album', 'artist', 'releasedate'];
+
+function includes(array, value) {
+    if (!is_defined(array)) {
+        return false;
+    }
+
+    if (Array.prototype.includes) {
+        return array.includes(value)
+    }
+    return array.indexOf(value) !== -1;
+}
+
 function decode_utf8(buffer) {
     var plaintext = '';
     var i = 0;
@@ -420,6 +433,10 @@ Daap.prototype.items = function(options) {
     var url = this.url + DATABASES_URL + '/' + db_id + '/' + ITEMS_URL +
         '?session-id=' + this.session_id + '&revision-id=' +
         this.revision_id + '&meta=' + fields.join();
+
+    if (is_defined(options.sort) && includes(SORT, options.sort)) {
+        url = url + '&sort=' + options.sort;
+    }
 
     return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
         self.status + ' for items').then(function() {
