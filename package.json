@@ -2,7 +2,7 @@
   "name": "daap.js",
   "version": "1.0.2",
   "description": "A promise based Digital Audio Access Protocol (DAAP) client implementation",
-  "main": "daap.js",
+  "main": "src/daap.js",
   "files": [
       "daap.js",
       "README.md",
