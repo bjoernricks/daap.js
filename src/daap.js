@@ -33,7 +33,7 @@ function includes(array, value) {
     }
 
     if (Array.prototype.includes) {
-        return array.includes(value)
+        return array.includes(value);
     }
     return array.indexOf(value) !== -1;
 }
