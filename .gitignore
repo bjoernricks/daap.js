@@ -3,6 +3,7 @@ node_modules
 
 # production
 build
+lib
 
 # misc
 .DS_Store
