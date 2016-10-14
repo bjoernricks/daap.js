@@ -1,15 +1,19 @@
 {
   "name": "daap.js",
-  "version": "1.0.2",
+  "version": "1.1.0-alpha1",
   "description": "A promise based Digital Audio Access Protocol (DAAP) client implementation",
-  "main": "src/daap.js",
+  "main": "lib/daap.js",
   "files": [
-    "src/daap.js",
+    "src/",
+    "lib/",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "./node_modules/.bin/webpack --progress --colors",
+    "build": "./node_modules/.bin/babel src -d lib",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -31,9 +35,11 @@
   },
   "homepage": "https://github.com/bjoernricks/daap.js#readme",
   "devDependencies": {
+    "babel-cli": "^6.16.0",
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
     "babel-preset-stage-3": "^6.17.0",
     "eslint": "^3.7.1",
     "eslint-loader": "^1.5.0",
