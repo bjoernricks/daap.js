@@ -9,7 +9,7 @@ module.exports = {
     output: {
         path: './build',
         pathinfo: true,
-        filename: 'bundle.js',
+        filename: 'daap.bundle.js',
     },
     module: {
         preLoaders: [
@@ -23,6 +23,9 @@ module.exports = {
                 test: /\.jss$/,
                 loader: 'babel',
                 exclude: /node_modules/,
+                query: {
+                    cacheDirectory: true,
+                },
             },
         ],
     },
