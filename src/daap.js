@@ -341,7 +341,9 @@ export class Daap {
                 this.status = Daap.Status.Error;
                 var error = new Error('Requesting ' + url + ' failed');
                 error.name = 'RequestError';
-                error.xhr = xhr;
+                if (xhr instanceof XMLHttpRequest) {
+                    error.xhr = xhr;
+                }
                 throw error;
             });
     }
