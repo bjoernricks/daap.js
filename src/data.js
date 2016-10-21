@@ -118,8 +118,9 @@ export const DEFAULT_CONTENT_CODES = {
     mcnm: get_string,  // dmap.contentcodesnumber the 4 byte codename
     mcna: get_string,  // dmap.contentcodesname the full name of the code
     mcty: get_int16,   // dmap.contentcodestype the type of the code
-    mlcl: null,                      // dmap.listing
-    mdcl: null,                      // dmap.dictionary
+    mrco: get_int32,   // dmap.returnedcount number of items in a list
+    mlcl: null,        // dmap.listing
+    mdcl: null,        // dmap.dictionary
 };
 
 
