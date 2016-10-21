@@ -7,6 +7,7 @@
 import {includes, is_defined} from './utils.js';
 import {Data, DEFAULT_CONTENT_CODES, CONTENT_TYPES} from './data.js';
 import request from './request.js';
+import Items from './items.js';
 
 const LOGIN_URL = 'login';
 const LOGOUT_URL = 'logout';
@@ -21,34 +22,6 @@ const DEFAULT_SERVER = '127.0.0.1';
 const DEFAULT_PORT = 3689;
 
 const SORT = ['name', 'album', 'artist', 'releasedate'];
-
-function convert_song(song, db_id, url, session_id) {
-    let id = song.get('miid');
-    let format = song.get('asfm');
-    let stream = url + 'databases/' + db_id + '/items/' + id +
-        '.' + format + '?session-id=' + session_id;
-    return {
-        id: id,
-        name: song.get('minm'),
-        url: song.get('asul'),
-        album: song.get('asal'),
-        artist: song.get('asar'),
-        compilation: song.get('asco'),
-        genre: song.get('asgn'),
-        description: song.get('asdt'),
-        comment: song.get('ascm'),
-        disc_nr: song.get('asdn'),
-        disc_count: song.get('asdc'),
-        track_nr: song.get('astn'),
-        track_count: song.get('astc'),
-        format: format,
-        bitrate: song.get('asbr'),
-        size: song.get('assz'),
-        year: song.get('asyr'),
-        duration: song.get('astm'),
-        stream_url: stream,
-    };
-}
 
 function convert_playlist(list) {
     return {
@@ -171,7 +144,7 @@ export class Daap {
             });
     }
 
-    items({db_id = 1, sort, max}) {
+    items({db_id = 1, sort}) {
         let fields = [
             'dmap.itemid',
             'dmap.itemname',
@@ -213,21 +186,8 @@ export class Daap {
                 let items = data.find('mlcl');
                 this._song = items.find('mlit');
                 this._db_id = db_id;
-                return this.nextItems(max);
+                return new Items(data, db_id, this.session_id, this.url);
             });
-    }
-
-    nextItems(max) {
-        let results = [];
-
-        for (let i = 0; is_defined(this._song) && this._song.isValid() &&
-                (!is_defined(max) || i < max); i++) {
-            results.push(convert_song(this._song, this._db_id, this.url,
-                this.session_id));
-            this._song = this._song.next();
-        }
-
-        return Daap.Promise.resolve(results);
     }
 
     playlists(db_id = 1) {
