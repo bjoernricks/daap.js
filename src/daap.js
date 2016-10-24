@@ -8,6 +8,7 @@ import {includes, is_defined} from './utils.js';
 import {Data, DEFAULT_CONTENT_CODES, CONTENT_TYPES} from './data.js';
 import request from './request.js';
 import Items from './items.js';
+import Song from ',/song.js';
 
 const LOGIN_URL = 'login';
 const LOGOUT_URL = 'logout';
@@ -186,7 +187,7 @@ export class Daap {
                 let items = data.find('mlcl');
                 this._song = items.find('mlit');
                 this._db_id = db_id;
-                return new Items(data, db_id, this.session_id, this.url);
+                return new Items(data, db_id, this.session_id, this.url, Song);
             });
     }
 
