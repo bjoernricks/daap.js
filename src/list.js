@@ -7,7 +7,7 @@
 import {is_defined} from './utils.js';
 import Item from './item.js';
 
-export class Items {
+export class List {
 
     constructor(data, db_id, session_id, url, clazz = Item) {
         this._data = data;
@@ -53,6 +53,6 @@ export class Items {
     }
 }
 
-export default Items;
+export default List;
 
 // vim: set ts=4 sw=4 tw=80:
