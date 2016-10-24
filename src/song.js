@@ -4,22 +4,9 @@
 /* See LICENSE comming with the source of daap.js for details.
 */
 
-export class Song {
+import Item from './item.js';
 
-    constructor(data, db_id, session_id, url) {
-        this._data = data;
-        this._db_id = db_id;
-        this._session_id = session_id;
-        this._url = url;
-    }
-
-    get(name) {
-        return this._data.get(name);
-    }
-
-    get id() {
-        return this.get('miid');
-    }
+export class Song extends Item {
 
     get format() {
         return this.get('asfm');
@@ -28,10 +15,6 @@ export class Song {
     get streamUrl() {
         return this._url + 'databases/' + this._db_id + '/items/' + this.id +
             '.' + this.format + '?session-id=' + this._session_id;
-    }
-
-    get name() {
-        return this.get('minm');
     }
 
     get url() {
