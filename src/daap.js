@@ -10,6 +10,7 @@ import request from './request.js';
 import List from './list.js';
 import Song from ',/song.js';
 import Database from './database.js';
+import Playlist from './playlist.js';
 
 const LOGIN_URL = 'login';
 const LOGOUT_URL = 'logout';
@@ -24,19 +25,6 @@ const DEFAULT_SERVER = '127.0.0.1';
 const DEFAULT_PORT = 3689;
 
 const SORT = ['name', 'album', 'artist', 'releasedate'];
-
-function convert_playlist(list) {
-    return {
-        id: list.get('miid'),
-        persistent_id: list.get('mper'),
-        parent_id: list.get('mpco'),
-        name: list.get('minm'),
-        item_count: list.get('mimc'),
-        base_playlist: list.get('abpl'),
-        smart_playlist: list.get('aeSP'),
-        special_playlist: list.get('aePS'),
-    };
-}
 
 export class Daap {
 
@@ -195,14 +183,7 @@ export class Daap {
             this.status + ' for playlists')
             .then(() => this._request(url))
             .then(data => {
-                let results = [];
-                let items = data.find('mlcl');
-                let list = items.find('mlit');
-                while (list.isValid()) {
-                    results.push(convert_playlist(list, db_id));
-                    list = list.next();
-                }
-                return results;
+                return List(Playlist, data);
             });
     }
 
