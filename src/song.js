@@ -8,6 +8,14 @@ import Item from './item.js';
 
 export class Song extends Item {
 
+    constructor(clazz, data, db_id, session_id, url) {
+        super(clazz, data);
+
+        this._db_id = db_id;
+        this._session_id = session_id;
+        this._url = url;
+    }
+
     get format() {
         return this.get('asfm');
     }

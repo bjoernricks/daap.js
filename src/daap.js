@@ -184,10 +184,7 @@ export class Daap {
             this.status + ' for items')
             .then(() => this._request(url))
             .then(data => {
-                let items = data.find('mlcl');
-                this._song = items.find('mlit');
-                this._db_id = db_id;
-                return new List(data, db_id, this.session_id, this.url, Song);
+                return new List(Song, data, db_id, this.session_id, this.url);
             });
     }
 

@@ -5,18 +5,14 @@
 */
 
 import {is_defined} from './utils.js';
-import Item from './item.js';
 
 export class List {
 
-    constructor(data, db_id, session_id, url, clazz = Item) {
+    constructor(clazz, data) {
+        this._clazz = clazz;
         this._data = data;
-        this._db_id = db_id;
-        this._session_id = session_id;
-        this._url = url;
         let items = data.find('mlcl');
         this._item = items.find('mlit');
-        this._clazz = clazz;
     }
 
     get length() {
