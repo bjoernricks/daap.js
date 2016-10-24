@@ -8,7 +8,7 @@ import {includes, is_defined} from './utils.js';
 import {Data, DEFAULT_CONTENT_CODES, CONTENT_TYPES} from './data.js';
 import request from './request.js';
 import List from './list.js';
-import Song from ',/song.js';
+import Song from './song.js';
 import Database from './database.js';
 import Playlist from './playlist.js';
 
