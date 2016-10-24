@@ -17,7 +17,7 @@ npm install --save daap.js
 ### With yarn
 
 ```sh
-yarn add daap,js
+yarn add daap.js
 ```
 
 ## A note on CORS
