@@ -47,8 +47,8 @@ daap.setPassword('.....');
 daap.login().then(function() {
     console.log('Yeah I am connected to my daap server');
     return daap.items();
-}).then(function(songs) {
-    console.log('I have got ' + songs.length + ' songs from my daap server');
+}).then(function(items) {
+    console.log('I have got ' + items.length + ' songs from my daap server');
 }).catch(function(error) {
     console.error('An error occured', error);
 });
