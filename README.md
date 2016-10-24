@@ -49,11 +49,14 @@ NameVirtualHost *:3690
 ```
 
 ## Example usage
+Example in ES2015/ES6
+
 ```javascript
+import Daap from 'daap.js';
 
 /* Daap accepts server and port. Per default server is 127.0.0.1 */
 /* and port 3689. server can be an IP or domain name */
-var daap = Daap({server: '192.168.1.123'});
+let daap = Daap({server: '192.168.1.123'});
 
 daap.serverinfo().then(function(server_info) {
     console.log(server_info);
@@ -62,16 +65,16 @@ daap.serverinfo().then(function(server_info) {
 /* set password if your server requires one */
 daap.setPassword('.....');
 
-daap.login().then(function() {
+daap.login().then(() => {
     console.log('Yeah I am connected to my daap server');
     return daap.items();
-}).then(function(items) {
+}).then(items => {
     console.log('I have got ' + items.length + ' songs from my daap server');
 
     for (song of items) {
       console.log('Found song ' + song.name + ' from ' + song.artist);
     }
-}).catch(function(error) {
+}).catch(error => {
     console.error('An error occured', error);
 });
 ```
