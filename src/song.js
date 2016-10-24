@@ -8,8 +8,8 @@ import Item from './item.js';
 
 export class Song extends Item {
 
-    constructor(clazz, data, db_id, session_id, url) {
-        super(clazz, data);
+    constructor(data, db_id, session_id, url) {
+        super(data);
 
         this._db_id = db_id;
         this._session_id = session_id;

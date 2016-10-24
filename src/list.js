@@ -8,11 +8,12 @@ import {is_defined} from './utils.js';
 
 export class List {
 
-    constructor(clazz, data) {
+    constructor(clazz, data, ...params) {
         this._clazz = clazz;
         this._data = data;
         let items = data.find('mlcl');
         this._item = items.find('mlit');
+        this._params = params;
     }
 
     get length() {
@@ -24,8 +25,9 @@ export class List {
 
         for (let i = 0; is_defined(this._item) && this._item.isValid() &&
                 (!is_defined(max) || i < max); i++) {
-            results.push(new this.clazz(this._item, this._db_id,
-                this._session_id, this._url));
+
+            results.push(new this._clazz(this._item, ...this._params));
+
             this._item = this._item.next();
         }
 
@@ -43,7 +45,7 @@ export class List {
         return {
             done: !has_item,
             value: has_item ?
-            new this.clazz(item, this._db_id, this._session_id, this._url) :
+            new this._clazz(item, ...this._params) :
             undefined,
         };
     }
