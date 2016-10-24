@@ -2,6 +2,24 @@
 
 A promise based Digital Audio Access Protocol (DAAP) client implementation in JavaScript
 
+ * [Installation](#installation)
+ * [A note on CORS](#a-note-on-cors)
+ * [Example usage](#example-usage)
+
+## Installation
+
+### With npm
+
+```sh
+npm install --save daap.js
+```
+
+### With yarn
+
+```sh
+yarn add daap,js
+```
+
 ## A note on CORS
 
 daap.js uses [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
@@ -49,6 +67,10 @@ daap.login().then(function() {
     return daap.items();
 }).then(function(items) {
     console.log('I have got ' + items.length + ' songs from my daap server');
+
+    for (song of items) {
+      console.log('Found song ' + song.name + ' from ' + song.artist);
+    }
 }).catch(function(error) {
     console.error('An error occured', error);
 });
