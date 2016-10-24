@@ -182,7 +182,6 @@ export class Daap {
             'dmap.itemcount',
             'dmap.persistentid',
             'dmap.parentcontainerid',
-            'dmap.editc',
             'daap.baseplaylist',
             'com.apple.itunes.special-playlist',
             'com.apple.itunes.smart-playlist',
