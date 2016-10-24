@@ -9,6 +9,7 @@ import {Data, DEFAULT_CONTENT_CODES, CONTENT_TYPES} from './data.js';
 import request from './request.js';
 import List from './list.js';
 import Song from ',/song.js';
+import Database from './database.js';
 
 const LOGIN_URL = 'login';
 const LOGOUT_URL = 'logout';
@@ -127,21 +128,7 @@ export class Daap {
             this.status + ' for databases')
             .then(() => this._request(url))
             .then(data => {
-                let results = [];
-                let databases = data.find('mlcl');
-
-                let db = databases.find('mlit');
-                while (db.isValid()) {
-                    results.push({
-                        id: db.get('miid'),
-                        name: db.get('minm'),
-                        item_count: db.get('mimc'),
-                        playlist_count: db.get('mctc'),
-                    });
-                    db = db.next();
-                }
-
-                return results;
+                return new List(Database, data);
             });
     }
 
