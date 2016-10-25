@@ -25,6 +25,11 @@ export class Song extends Item {
             '.' + this.format + '?session-id=' + this._session_id;
     }
 
+    get artworkUrl() {
+        return this._url + 'databases/' + this._db_id + '/items/' + this.id +
+        '/extra_data/artwork?session-id=' + this._session_id;
+    }
+
     get url() {
         return this.get('asul');
     }
