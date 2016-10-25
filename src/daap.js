@@ -121,46 +121,8 @@ export class Daap {
     }
 
     items({db_id = 1, sort}) {
-        let fields = [
-            'dmap.itemid',
-            'dmap.itemname',
-            'daap.songalbum',
-            'daap.songartist',
-            'daap.songbitrate',
-            'daap.songcomment',
-            'daap.songcompilation',
-            'daap.songcomposer',
-            'daap.songdataurl',
-            'daap.songdateadded',
-            'daap.songdatemodified',
-            'daap.songdescription',
-            'daap.songdisccount',
-            'daap.songdiscnumber',
-            'daap.songformat',
-            'daap.songgenre',
-            'daap.songsize',
-            'daap.songtime',
-            'daap.songtracknumber',
-            'daap.songtrackcount',
-            'daap.songyear',
-        ];
-
-        let url = this.url + DATABASES_URL + '/' + db_id + '/' + ITEMS_URL +
-            '?session-id=' + this.session_id + '&revision-id=' +
-            this.revision_id + '&meta=' + fields.join();
-
-        if (is_defined(sort)) {
-            if (includes(SORT, sort)) {
-                url = url + '&sort=' + sort;
-            }
-        }
-
-        return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
-            this.status + ' for items')
-            .then(() => this._request(url))
-            .then(data => {
-                return new List(Song, data, db_id, this.session_id, this.url);
-            });
+        let url = this.url + DATABASES_URL + '/' + db_id + '/' + ITEMS_URL;
+        return this._items({db_id, url, sort});
     }
 
     playlists(db_id = 1) {
@@ -185,6 +147,12 @@ export class Daap {
             .then(data => {
                 return List(Playlist, data);
             });
+    }
+
+    playlist({db_id = 1, playlist_id, sort}) {
+        let url = this.url + DATABASES_URL + '/' + db_id + '/' + PLAYLISTS_URL +
+            '/' + playlist_id + '/' + ITEMS_URL;
+        return this._items({url, db_id, sort});
     }
 
     serverinfo() {
@@ -219,6 +187,51 @@ export class Daap {
                     }
                     this.content_codes = content_codes;
                 }
+            });
+    }
+
+    _items({db_id = 1, url, sort}) {
+        let fields = [
+            'dmap.itemid',
+            'dmap.itemname',
+            'daap.songalbum',
+            'daap.songartist',
+            'daap.songbitrate',
+            'daap.songcomment',
+            'daap.songcompilation',
+            'daap.songcomposer',
+            'daap.songdataurl',
+            'daap.songdateadded',
+            'daap.songdatemodified',
+            'daap.songdescription',
+            'daap.songdisccount',
+            'daap.songdiscnumber',
+            'daap.songformat',
+            'daap.songgenre',
+            'daap.songsize',
+            'daap.songtime',
+            'daap.songtracknumber',
+            'daap.songtrackcount',
+            'daap.songyear',
+        ];
+
+        let item_url = url + '?session-id=' + this.session_id +
+            '&revision-id=' + this.revision_id + '&meta=' + fields.join();
+
+        if (is_defined(sort)) {
+            if (includes(SORT, sort)) {
+                item_url = item_url + '&sort=' + sort;
+            }
+            else {
+                console.warn('Invalid sort column', sort); // eslint-disable-line no-console
+            }
+        }
+
+        return this._checkStatus([Daap.Status.HasRevision], 'Invalid status ' +
+            this.status + ' for items')
+            .then(() => this._request(item_url))
+            .then(data => {
+                return new List(Song, data, db_id, this.session_id, this.url);
             });
     }
 
